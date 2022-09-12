@@ -1,6 +1,3 @@
-
-
-
 """
 python -m armory run <json_config>
 OR
