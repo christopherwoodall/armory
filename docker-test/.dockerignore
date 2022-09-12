@@ -1,9 +1,9 @@
 # ignore .git, .conda, etc.
-.*
+# .*
 # ignore large directories
-datasets/
+# datasets/
 # ignore temp directories
-outputs/
-tmp/
+# outputs/
+# tmp/
 __pycache__/
 *.pyc
