@@ -1,0 +1,5 @@
+
+ARMORY_DIR=""
+ART_DIR=""
+CONDA_DIR=""
+DATA_DIR=""

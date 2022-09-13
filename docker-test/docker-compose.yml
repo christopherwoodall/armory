@@ -1,0 +1,45 @@
+#!/usr/bin/env docker
+---
+
+version: '3'
+services:
+  armory-gpu:
+    image: armory-gpu/testing:latest
+    # build:
+    #  context: .
+    #  dockerfile: Dockerfile-GPU
+    container_name: armory-gpu
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    networks:
+      - armory-net
+
+
+  armory-client:
+    image: armory-client/testing:latest
+    # build:
+    #  context: .
+    #  dockerfile: Dockerfile-Client
+    container_name: armory-client
+    privileged: true
+    restart: unless-stopped
+    ports:
+      - 8888:8888
+    # volumes:
+    #   - ${CERT_PATH?err}:/opt/app/devKeystore.p12:Z
+    #   - ${CERT_PATH?err}:/opt/app/keystore.p12:Z
+    # environment:
+    #   - CERT_ALIAS=${CERT_ALIAS?err}
+    #   - CERT_KEYSTORE_PASS=${CERT_PASS?err}
+    #   - CERT_TRUSTSTORE_PASS=${CERT_PASS?err}
+    networks:
+      - armory-net
+
+networks:
+  armory-net:

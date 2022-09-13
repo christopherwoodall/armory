@@ -1,0 +1,195 @@
+###########################################################################################
+#                           ARMORY Baseline Docker Image
+#
+# This File contains the baseline image for Armory docker images.  All framework
+# based images should inhereit from this image using:
+#       FROM twosixlabs/armory-baseline AS armory-baseline
+#
+#
+###########################################################################################
+
+ARG IMAGE_BASE="nvidia/cuda"
+ARG IMAGE_TAG="11.3.1-cudnn8-runtime-ubuntu20.04"
+
+ARG CONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+ARG ARMORY_URL=""
+ARG ART_URL=""
+
+# ARG CONDA_DIR="~/conda"
+ARG CONDA_DIR="/opt/conda"
+ARG ARMORY_DIR="/armory"
+ARG ART_DIR="/art"
+
+ARG USERNAME="armory"
+ARG PASSWORD="armory"
+
+FROM ${IMAGE_BASE}:${IMAGE_TAG} AS base
+
+
+ENV \
+  DEBIAN_FRONTEND=noninteractive
+
+
+USER root
+
+
+# nvidia-container-runtime
+# https://github.com/NVIDIA/nvidia-container-runtime#environment-variables-oci-spec
+# nvidia-container-runtime
+ENV \
+  NVIDIA_VISIBLE_DEVICES="all" \
+  NVIDIA_DRIVER_CAPABILITIES="compute,utility" \
+  LC_ALL="en_US.UTF-8" \
+  LANG="en_US.UTF-8" \
+  LANGUAGE="en_US:en"
+  # NVIDIA_REQUIRE_CUDA "cuda>=11.2 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 driver>=450"
+  # CUDA_VERSION 11.3.1
+
+
+# Install dependencies and utilities.
+RUN \
+  apt-get -y -qq update && \
+  apt-get install --no-install-recommends --yes \
+    apt-transport-https \
+    ca-certificates \
+    build-essential \
+    curl \
+    git \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    locales \
+    python3 \
+    python3-pip \
+    tzdata \
+    vim \
+    wget \
+  && \
+    apt-get autoremove --yes && \
+    apt-get clean --yes && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN \
+  # Generate and Set locals
+  sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=${LANG} && \
+  # Fix execution permissions
+  chmod -R a+rwx /usr/local/bin/ && \
+  # Configure dynamic linker run-time bindings
+  ldconfig
+  # Cleanup
+  #clean-layer.sh
+
+
+# # Create a non-root user and switch to it
+# # Use the above args during building
+# #   https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+# ARG USERNAME
+# ARG PASSWORD
+# RUN \
+#   apt-get -y -qq update && \
+#   apt-get install --no-install-recommends --yes \
+#     sudo
+
+# RUN \
+#   useradd \
+#     --password '' \
+#     --system \
+#     --create-home \
+#     --home-dir /${USERNAME} \
+#     --groups sudo \
+#     --gid 0 \
+#     --uid 1000 \
+#     --shell /bin/bash \
+#     ${USERNAME} \
+#   && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/90-${USERNAME}" \
+#   && usermod -aG sudo ${USERNAME}
+
+# USER $USERNAME
+# ENV HOME=/$USERNAME
+ENV HOME=${ARMORY_DIR}
+
+
+ARG ARMORY_DIR
+ARG ART_DIR
+ARG CONDA_DIR
+RUN mkdir -p {"${CONDA_DIR}","${ARMORY_DIR}","${ART_DIR}"}
+# RUN mkdir -p ~/{conda,app,artifacts}
+
+WORKDIR ${ARMORY_DIR}
+
+VOLUME ["${ARMORY_DIR}/resources/"]
+ADD ./docker-test/resources/ ${ARMORY_DIR}/resources/
+
+
+
+# Install Conda
+FROM base AS conda
+
+ARG CONDA_URL
+ARG CONDA_DIR
+
+RUN curl -sL -o miniconda.sh "${CONDA_URL}" \
+  && chmod +x miniconda.sh \
+  && ./miniconda.sh -bfp ${CONDA_DIR} \
+  && rm -rf miniconda.sh
+
+ENV \
+  PATH=${CONDA_DIR}/bin:$PATH
+
+RUN \
+  # Setup Python environment. All python are linked to the conda instances.
+    ln -s -f $CONDA_DIR/bin/python /usr/bin/python
+    # apt-get update && \
+    # # upgrade pip
+    # pip install --upgrade pip
+
+
+# RUN conda init bash
+RUN \
+  conda config --system --add channels conda-forge && \
+  conda config --system --set auto_update_conda False && \
+  conda config --system --set show_channel_urls True && \
+  conda config --system --set channel_priority strict && \
+  # Deactivate pip interoperability (currently default), otherwise conda tries to uninstall pip packages
+  conda config --system --set pip_interop_enabled false && \
+  # Update conda
+  conda update -y -n base -c defaults conda && \
+  conda update -y setuptools && \
+  conda install -y conda-build
+
+
+RUN conda install -y --update-all \
+  ipython \
+  notebook \
+  nb_conda_kernels \
+  nbconvert \
+  yarl \
+  numpy \
+  scipy \
+  scikit-learn
+# jupyterlab
+# python mkl-service mkl-include mkl mkl-devel cython pandas matplotlib seaborn jupyterlab-git
+# uninstall cpu only packages via conda
+# RUN conda remove --force -y pytorch cpuonly
+
+# #  && conda env update -n armory -f ${ARMORY_DIR}/resources/environment.yml \
+# #  && conda install -c esri tensorflow-addons \
+# #  && conda clean -tipsy \
+# #  && rm /app/environment.yml \
+# #  && conda clean -ya
+
+
+# # Create new Coda environment.
+# conda create --name tf-2.0
+# conda create -n tf-2.0 tensorflow-gpu pip ipykernel
+# jupyter notebook
+
+# Jupyter Ports
+EXPOSE 8888
+
+
+# ENTRYPOINT ["/bin/bash"]
+CMD tail -f /dev/null
+
