@@ -15,8 +15,9 @@ ENV \
   TZ="UTC" \
   LC_ALL="en_US.UTF-8" \
   LANG="en_US.UTF-8" \
-  LANGUAGE="en_US:en"
-
+  LANGUAGE="en_US:en" \
+  USER="armory" \
+  PASSWORD="armory"
 
 USER root
 
@@ -34,15 +35,21 @@ RUN apt-get update && \
         vim && \
     # Remove the effect of `apt-get update`
     rm -rf /var/lib/apt/lists/* && \
-    # Make the "en_US.UTF-8" locale
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+    # Generate and Set locals
+    sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+      locale-gen && \
+      dpkg-reconfigure --frontend=noninteractive locales && \
+      update-locale LANG=${LANG} && \
     # Setup timezone
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    # Fix execution permissions
+    chmod -R a+rwx /usr/local/bin/ && \
+    chmod 644 /etc/resolv.conf && \
+    # Configure dynamic linker run-time bindings
+    ldconfig
+    # Cleanup
+    #clean-layer.sh
 
-
-ENV \
-  USER="armory" \
-  PASSWORD="armory"
 
 RUN \
   useradd \
@@ -56,7 +63,7 @@ RUN \
     --shell /bin/bash \
     ${USER} \
   && \
-    echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/90-${USER}" && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/90-${USER}" && \
     usermod -aG sudo ${USER}
 
 ENV HOME="/home/${USER}"
@@ -85,9 +92,12 @@ EXPOSE 8888
 
 USER ${USER}
 
+RUN mkdir "${HOME}/app/"
+VOLUME [ "${HOME}/app/" ]
+
+
 # Jupyter config
 # /home/armory/.jupyter/jupyter_notebook_config.py
-
 
 ENTRYPOINT [ \
   "jupyter", "notebook", \
@@ -95,8 +105,8 @@ ENTRYPOINT [ \
     "--port=8888", \
     "--NotebookApp.token=''", \
     "--NotebookApp.password=''", \
-    "--no-browser" \
-    # "--notebook-dir=${ARMORY}/notebooks", \
+    "--no-browser", \
+    "--notebook-dir=app" \
     # "--config=${HOME}/.jupyter/config.py", \
     # --sock=<Unicode>
 ]

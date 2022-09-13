@@ -9,6 +9,12 @@ services:
     #  context: .
     #  dockerfile: Dockerfile-GPU
     container_name: armory-gpu
+    expose:
+      - "9999"
+    ports:
+      - 9999:9999
+    volumes:
+      - ./server-resources:/armory/resources
     runtime: nvidia
     deploy:
       resources:
@@ -23,21 +29,24 @@ services:
 
   armory-client:
     image: armory-client/testing:latest
+    # env_file:
+    #   - client-resources/client-variables.env
     # build:
     #  context: .
     #  dockerfile: Dockerfile-Client
     container_name: armory-client
     privileged: true
     restart: unless-stopped
+    expose:
+      - "8888"
     ports:
       - 8888:8888
-    # volumes:
-    #   - ${CERT_PATH?err}:/opt/app/devKeystore.p12:Z
+    volumes:
+      - ./client-resources/app:/home/armory/app/
     #   - ${CERT_PATH?err}:/opt/app/keystore.p12:Z
-    # environment:
-    #   - CERT_ALIAS=${CERT_ALIAS?err}
-    #   - CERT_KEYSTORE_PASS=${CERT_PASS?err}
-    #   - CERT_TRUSTSTORE_PASS=${CERT_PASS?err}
+    environment:
+      - JUPYTER_IP=0.0.0.0
+      - JUPYTER_PORT=8888
     networks:
       - armory-net
 

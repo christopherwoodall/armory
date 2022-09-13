@@ -23,11 +23,8 @@ ARG ART_DIR="/art"
 ARG USERNAME="armory"
 ARG PASSWORD="armory"
 
+
 FROM ${IMAGE_BASE}:${IMAGE_TAG} AS base
-
-
-ENV \
-  DEBIAN_FRONTEND=noninteractive
 
 
 USER root
@@ -37,13 +34,13 @@ USER root
 # https://github.com/NVIDIA/nvidia-container-runtime#environment-variables-oci-spec
 # nvidia-container-runtime
 ENV \
+  DEBIAN_FRONTEND="noninteractive" \
   NVIDIA_VISIBLE_DEVICES="all" \
   NVIDIA_DRIVER_CAPABILITIES="compute,utility" \
   LC_ALL="en_US.UTF-8" \
   LANG="en_US.UTF-8" \
-  LANGUAGE="en_US:en"
-  # NVIDIA_REQUIRE_CUDA "cuda>=11.2 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 driver>=450"
-  # CUDA_VERSION 11.3.1
+  LANGUAGE="en_US:en" \
+  TZ="UTC"
 
 
 # Install dependencies and utilities.
@@ -66,62 +63,35 @@ RUN \
   && \
     apt-get autoremove --yes && \
     apt-get clean --yes && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    # Generate and Set locals
+    sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+      locale-gen && \
+      dpkg-reconfigure --frontend=noninteractive locales && \
+      update-locale LANG=${LANG} && \
+    # Setup timezone
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    # Fix execution permissions
+    chmod -R a+rwx /usr/local/bin/ && \
+    # Configure dynamic linker run-time bindings
+    ldconfig
+    # Cleanup
+    #clean-layer.sh
 
-RUN \
-  # Generate and Set locals
-  sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=${LANG} && \
-  # Fix execution permissions
-  chmod -R a+rwx /usr/local/bin/ && \
-  # Configure dynamic linker run-time bindings
-  ldconfig
-  # Cleanup
-  #clean-layer.sh
 
-
-# # Create a non-root user and switch to it
-# # Use the above args during building
-# #   https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-# ARG USERNAME
-# ARG PASSWORD
-# RUN \
-#   apt-get -y -qq update && \
-#   apt-get install --no-install-recommends --yes \
-#     sudo
-
-# RUN \
-#   useradd \
-#     --password '' \
-#     --system \
-#     --create-home \
-#     --home-dir /${USERNAME} \
-#     --groups sudo \
-#     --gid 0 \
-#     --uid 1000 \
-#     --shell /bin/bash \
-#     ${USERNAME} \
-#   && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/90-${USERNAME}" \
-#   && usermod -aG sudo ${USERNAME}
-
-# USER $USERNAME
-# ENV HOME=/$USERNAME
 ENV HOME=${ARMORY_DIR}
 
-
-ARG ARMORY_DIR
-ARG ART_DIR
-ARG CONDA_DIR
+ARG \
+  ARMORY_DIR \
+  ART_DIR \
+  CONDA_DIR
 RUN mkdir -p {"${CONDA_DIR}","${ARMORY_DIR}","${ART_DIR}"}
 # RUN mkdir -p ~/{conda,app,artifacts}
 
 WORKDIR ${ARMORY_DIR}
 
 VOLUME ["${ARMORY_DIR}/resources/"]
-ADD ./docker-test/resources/ ${ARMORY_DIR}/resources/
-
+ADD ./server-resources/ ${ARMORY_DIR}/resources/
 
 
 # Install Conda
@@ -138,16 +108,11 @@ RUN curl -sL -o miniconda.sh "${CONDA_URL}" \
 ENV \
   PATH=${CONDA_DIR}/bin:$PATH
 
-RUN \
-  # Setup Python environment. All python are linked to the conda instances.
-    ln -s -f $CONDA_DIR/bin/python /usr/bin/python
-    # apt-get update && \
-    # # upgrade pip
-    # pip install --upgrade pip
-
 
 # RUN conda init bash
 RUN \
+  # Setup Python environment. All python are linked to the conda instances.
+  ln -s -f $CONDA_DIR/bin/python /usr/bin/python && \
   conda config --system --add channels conda-forge && \
   conda config --system --set auto_update_conda False && \
   conda config --system --set show_channel_urls True && \
@@ -156,19 +121,25 @@ RUN \
   conda config --system --set pip_interop_enabled false && \
   # Update conda
   conda update -y -n base -c defaults conda && \
-  conda update -y setuptools && \
-  conda install -y conda-build
+  conda update -y setuptools
 
 
-RUN conda install -y --update-all \
-  ipython \
-  notebook \
-  nb_conda_kernels \
-  nbconvert \
-  yarl \
-  numpy \
-  scipy \
-  scikit-learn
+# Install Python Packages
+FROM conda AS build
+
+RUN conda install -y \
+  conda-build \
+  flask
+
+# RUN conda install -y --update-all \
+#   ipython \
+#   notebook \
+#   nb_conda_kernels \
+#   nbconvert \
+#   yarl \
+#   numpy \
+#   scipy \
+#   scikit-learn
 # jupyterlab
 # python mkl-service mkl-include mkl mkl-devel cython pandas matplotlib seaborn jupyterlab-git
 # uninstall cpu only packages via conda
@@ -184,12 +155,12 @@ RUN conda install -y --update-all \
 # # Create new Coda environment.
 # conda create --name tf-2.0
 # conda create -n tf-2.0 tensorflow-gpu pip ipykernel
-# jupyter notebook
-
-# Jupyter Ports
-EXPOSE 8888
 
 
-# ENTRYPOINT ["/bin/bash"]
-CMD tail -f /dev/null
+# Example Server
+EXPOSE 9999
+
+
+# CMD tail -f /dev/null
+CMD ["python", "resources/api-gateway.py", "&", "tail", "-f", "/dev/null"]
 
