@@ -9,10 +9,12 @@ FROM ${BASE_IMAGE}:${RELEASE_TAG}
 
 ENV \
   DEBIAN_FRONTEND="noninteractive" \
-  PYTHON_VERSION="3.8"
-  # LC_ALL="en_US.UTF-8" \
-  # LANG="en_US.UTF-8" \
-  # LANGUAGE="en_US:en"
+  PYTHON_VERSION="3.8" \
+  TZ="UTC" \
+  LC_ALL="en_US.UTF-8" \
+  LANG="en_US.UTF-8" \
+  LANGUAGE="en_US:en"
+
 
 USER root
 
@@ -31,24 +33,15 @@ RUN apt-get update && \
     # Remove the effect of `apt-get update`
     rm -rf /var/lib/apt/lists/* && \
     # Make the "en_US.UTF-8" locale
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-ENV LANG en_US.utf8
-
-
-# # Setup Locales
-# RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
-#         && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-# ENV LANG en_US.utf8
-
-
-# Setup timezone
-ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+    # Setup timezone
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
 ENV \
   USER="armory" \
-  PASSWORD="armory"
+  PASSWORD="armory" \
+  HOME="/home/${USER}"
 
 RUN \
   useradd \
@@ -65,12 +58,10 @@ RUN \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/90-${USER}" && \
     usermod -aG sudo ${USER}
 
-ENV \
-  HOME=/home/${USER}
 WORKDIR $HOME
 
 
-# Install miniconda (python)
+# Install miniconda
 # Referenced PyTorch's Dockerfile:
 #   https://github.com/pytorch/pytorch/blob/master/docker/pytorch/Dockerfile
 RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
@@ -78,26 +69,19 @@ RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-L
     ./miniconda.sh -b -p conda && \
     rm miniconda.sh && \
     conda/bin/conda install -y python=$PYTHON_VERSION jupyter jupyterlab
-    # conda/bin/conda clean -ya
-    # conda/bin/conda install -y pytorch torchvision torchaudio cudatoolkit=${CUDA_VERSION} -c pytorch && \
+
 ENV PATH $HOME/conda/bin:$PATH
+
 RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc
 
 
+# Port 8888 for JupyterLab
+EXPOSE 8888
+# EXPOSE 22
+
+
 USER ${USER}
-# Expose port 8888 for JupyterLab
-EXPOSE 22 8888
-ENTRYPOINT ["jupyter"]
-CMD ["notebook", "--ip=0.0.0.0", "--no-browser"]
-# CMD ["notebook", "--allow-root", "--ip=0.0.0.0", "--no-browser"]
 
 
-# Start openssh server
-# USER root
-# RUN mkdir /run/sshd
-# CMD ["/usr/sbin/sshd","-D"]
-
-
-# EXPOSE "8888"
-# ENTRYPOINT ["python3", "-m", "http.server", "8888"]
+ENTRYPOINT ["jupyter", "notebook", "--ip=0.0.0.0", "--no-browser"]
