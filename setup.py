@@ -64,5 +64,9 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     # entry_points={"console_scripts": ["armory = armory.__main__:main"]},
-    entry_points={"console_scripts": ["armory = armory.cli:main"]},
+    entry_points={"console_scripts": [
+        "armory = armory.cli:main",
+        "armory1 = armory.__main__:main"
+        ]
+    },
 )
