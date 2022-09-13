@@ -6,6 +6,8 @@ ARG MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x
 
 FROM ${BASE_IMAGE}:${RELEASE_TAG}
 
+LABEL armory.client=development
+
 
 ENV \
   DEBIAN_FRONTEND="noninteractive" \
@@ -40,8 +42,7 @@ RUN apt-get update && \
 
 ENV \
   USER="armory" \
-  PASSWORD="armory" \
-  HOME="/home/${USER}"
+  PASSWORD="armory"
 
 RUN \
   useradd \
@@ -58,6 +59,7 @@ RUN \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/90-${USER}" && \
     usermod -aG sudo ${USER}
 
+ENV HOME="/home/${USER}"
 WORKDIR $HOME
 
 
@@ -83,5 +85,19 @@ EXPOSE 8888
 
 USER ${USER}
 
+# Jupyter config
+# /home/armory/.jupyter/jupyter_notebook_config.py
 
-ENTRYPOINT ["jupyter", "notebook", "--ip=0.0.0.0", "--no-browser"]
+
+ENTRYPOINT [ \
+  "jupyter", "notebook", \
+    "--ip=0.0.0.0", \
+    "--port=8888", \
+    "--NotebookApp.token=''", \
+    "--NotebookApp.password=''", \
+    "--no-browser" \
+    # "--notebook-dir=${ARMORY}/notebooks", \
+    # "--config=${HOME}/.jupyter/config.py", \
+    # --sock=<Unicode>
+]
+
