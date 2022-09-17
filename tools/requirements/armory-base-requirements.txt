@@ -15,7 +15,6 @@
 #        environment, covering the CIFAR-10 & CARLA
 #        armory experiments.  A future release will be
 #        more comprehensive.
-#
 #########################################################
 
 # PyTorch

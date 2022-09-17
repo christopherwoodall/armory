@@ -62,7 +62,7 @@ def get_dynamic_version():
 
 def get_pip_version():
     try:
-        return version("armory-testbed")
+        return version("armory")
     except PackageNotFoundError:
         log.critical("armory package is not pip installed and not locally cloned")
         raise

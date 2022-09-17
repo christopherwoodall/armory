@@ -1,5 +1,4 @@
-#
-# This file is only to be used if the local environment requires that you
+# Install these dependencies if running in a local environment; e.g. w/out requires that you
 # run armory in "--no-docker" mode. Using no-docker mode adds considerable
 # complexity to the installation and operation of armory, so we encourage the
 # standard containerized version for most uses.
@@ -64,7 +63,7 @@ sox
 #tf-models-official==2.8
 #
 # protobuf=3  # Note: Conda or binary install
-# 
+#
 #       The TF2 object detection API requires separate installation, which
 #       is not simply handled by pip. Instructions can be found at
 #       https://github.com/tensorflow/models/blob/79354e14a4b41ff9019f4a5ebd12cfa498917182/research/object_detection/packages/tf2/setup.py

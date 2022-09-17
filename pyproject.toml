@@ -1,6 +1,160 @@
-# build-system taken from https://github.com/pypa/setuptools_scm/#pyprojecttoml-usage
-[build-system]
-requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+#########################################
+# Documentation:
+#   - https://peps.python.org/pep-0518/
+#   - https://python-poetry.org/docs/pyproject/
+#   - https://packaging.python.org/en/latest/specifications/
+#########################################
 
-[tool.setuptools_scm]
-# this empty section is needed to make the plugin work
+[tool.poetry]
+name        = "armory"
+version     = "0.15.1"
+description = "Adversarial Robustness Test Bed"
+license     = "MIT"
+authors     = [ "Two Six Technologies <armory@twosixlabs.com>" ]
+
+homepage    = "https://github.com/twosixlabs/armory"
+repository  = "https://github.com/twosixlabs/armory"
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+
+[tool.poetry.scripts]
+armory = "armory.__main__:main"
+armory-cli = "armory.scenarios.main:run_config"
+
+
+[tool.poetry.dependencies]
+python      = "^3.8"
+pytest      = "^7.1.2"
+# docker      = "*"
+docker  = {extras = ["tls"], version = "*"}
+podman      = "^4.0.0"
+loguru      = "*"
+requests    = "*"
+jsonschema  = "*"
+
+
+[tool.poetry.group.testing.dependencies]
+pre-commit = "^2.15.0"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.5"
+black = {version = "^20.8b1", allow-prereleases = true}
+flake8 = "^3.7.9"
+yamllint = "*"
+click = "^8.0.*"
+# mkdocs = "*"
+# tox = "^3.0"
+
+
+[tool.poetry.group.dataset.dependencies]
+apache-beam = "2.22.0"
+pydub       = "0.24.1"
+
+
+[tool.poetry.group.no-docker.dependencies]
+#########################################################
+# NOTE:  Currently, this only provides a `pytorch`
+#        environment, covering the CIFAR-10 & CARLA
+#        armory experiments.  A future release will be
+#        more comprehensive.
+#########################################################
+adversarial-robustness-toolbox = "^1.11.*" # ART
+torch        = "1.12.1"       # PyTorch
+torchvision  = "0.13.1"       # PyTorch
+torchaudio   = "0.12.1"       # PyTorch
+tensorflow   = "2.10.0"       # TensorFlow
+tensorboardx = "2.5.1"        # TensorFlow
+tensorflow-datasets = "4.6.0" # TensorFlow
+numpy      = "1.23.3"       # Numpy
+scipy      = "1.9.1"        # Numpy
+matplotlib = "3.5.3"        # Numpy
+jupyterlab = "3.4.7"        # Jupyter Lab
+Pillow     = "9.2.0"        # Data dependencies
+boto3      = "1.24.72"       # Needed for armory.data.utils
+ffmpeg-python = "0.2.0"     # Needed for armory.utils.export
+opencv-python = "4.6.0.66"  # Needed for CARLA baseline scenario
+
+
+[tool.poetry.group.host.dependencies]
+#########################################################
+# NOTE:  Install these dependencies if running in a
+#        local environment; e.g. w/out Docker.
+#########################################################
+adversarial-robustness-toolbox = "^1.11.*" # ART
+torch        = "1.12.1"         # PyTorch
+torchvision  = "0.13.1"         # PyTorch
+torchaudio   = "0.12.1"         # PyTorch
+librosa      = "*"              # PyTorch
+pytorch-lightning    = "1.4.*"  # PyTorch
+python-levenshtein   = "*"      # PyTorch
+sox                  = "*"      # PyTorch
+hydra-core           = "*"      # PyTorch
+google-cloud-storage = "*"      # PyTorch
+tensorflow   = "2.10.0"         # TensorFlow
+tensorboardx = "2.5.1"          # TensorFlow
+tensorflow-datasets = "4.6.0"   # TensorFlow
+numpy      = "1.23.3"           # Numpy
+scipy      = "1.9.1"            # Numpy
+matplotlib = "3.5.3"            # Numpy
+jupyterlab = "3.4.7"            # Jupyter Lab
+Pillow     = "9.2.0"            # Data dependencies
+boto3      = "1.24.72"          # Needed for armory.data.utils
+ffmpeg-python = "0.2.0"         # Needed for armory.utils.export
+opencv-python = "4.6.0.66"      # Needed for CARLA baseline scenario
+hydra-lightning = { git = "https://github.com/romesco/hydra-lightning.git" }
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts    = "-ra -q"
+log_level  = "ERROR"
+testpaths  = [ "tests" ]
+filterwarnings = []
+markers = [
+  "slow",                       # This test is slow
+  "online",                     # This test needs open internet access
+  "keras",                      # This test requires tf1.compat support for keras
+  "tf1",                        # This test requires tf1 support (tf2.compat.v1 adapter)
+  "docker_required",            # This Test Requires Docker to run
+  "end_to_end",                 # Full End to End Test (typically slow)
+  "unit",                       # These are Unit Tests (fast and lightweight)
+  "pytorch_deepspeech",         # This test requires pytorch-deepspeech docker container (or equivalent dependencies) to run
+]
+
+
+#########################################
+# Pre-commit Git Hooks
+#########################################
+[tool.vulture]
+paths             = ["src"]
+#exclude          = ["file*.py", "dir/"]
+ignore_decorators = ["#~vulture.ignore~#"]
+#ignore_names     = ["*.test.py"]
+min_confidence    = 80
+make_whitelist    = true
+sort_by_size      = true
+verbose           = true
+
+
+#########################################
+# Build System
+#########################################
+[build-system]
+requires = ["poetry-core>=1.2.*"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry-version-plugin]
+source = "init"
