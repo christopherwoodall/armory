@@ -134,7 +134,7 @@ def ensure_image_present(image_name: str) -> str:
     If image_name is available, return it. Otherwise, pull it from dockerhub.
     """
     log.trace(f"ensure_image_present {image_name}")
-    docker_client = docker.from_env()
+    docker_client = docker.from_env(version="auto")
 
     if not is_armory(image_name):
         if is_image_local(docker_client, image_name):
