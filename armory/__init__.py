@@ -7,11 +7,12 @@ from typing import Dict, Any
 from armory.logs import log
 from armory.version import get_version
 
+__all__ = (
+    '__version__',
+    'armory'
+)
 
-def __getattr__(name):
-    if name == "__version__":
-        return get_version()
-    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+__version__ = "0.15.1"
 
 
 # typedef for a widely used JSON-like configuration specification

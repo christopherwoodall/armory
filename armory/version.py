@@ -12,20 +12,18 @@ which also have a commit count and date in them like 1.0.1.dev2+g0c5ffd9.d202203
 which is a bit ungainly.
 """
 
-try:
-    from importlib.metadata import version, PackageNotFoundError
-except ModuleNotFoundError:
-    from importlib_metadata import version, PackageNotFoundError
+# TODO: See pandas library: https://github.com/pandas-dev/pandas/blob/main/pandas/_version.py
 
-import pathlib
 import re
+import pathlib
 import subprocess
+import pkg_resources
+
 
 from armory.logs import log
 
 
 _VERSION = None
-
 
 def get_version():
     global _VERSION
@@ -34,10 +32,42 @@ def get_version():
     return _VERSION
 
 
-def get_dynamic_version():
+def get_metadata_version(package, version = None):
+    try:
+        from importlib.metadata import version, PackageNotFoundError
+    except ModuleNotFoundError:
+        from importlib_metadata import version, PackageNotFoundError
+    return version(package)
+    # import pkg_resources
+    # version = pkg_resources.get_distribution(package).version
+
+
+def get_pyproject_version():
+    """
+    Produce version number found in the pyproject.toml.
+      - https://peps.python.org/pep-0621/
+
+    Return None if not found.
+    """
+    try:
+        import tomllib as toml  # Python 3.10+
+    except ModuleNotFoundError:
+        import toml
+
+    pyproject = pathlib.Path(__file__).parent.parent / "pyproject.toml"
+
+    if pyproject.exists():
+        pyproject = toml.load(pyproject)
+        # Check if the project was packaged with poetry.
+        if (poetry := pyproject.get('tool', {}).get('poetry', {})) != {}:
+            return poetry.get('version', None)
+        # TODO: setuptools, et. al.
+    return None
+
+
+def get_setuptools_version():
     """
     Produce the version dynamically from setup.py if available.
-
     Return None if setup.py is not available
     """
     armory_repo_root = pathlib.Path(__file__).parent.parent
@@ -60,21 +90,22 @@ def get_dynamic_version():
     return _version
 
 
-def get_pip_version():
-    try:
-        return version("armory")
-    except PackageNotFoundError:
-        log.critical("armory package is not pip installed and not locally cloned")
-        raise
-
-
-def trim_version(_version):
-    return re.sub(r"dev\d+\+(g[0-9a-f]+)(\.d\d+)?$", r"\1", _version)
+def trim_version(version):
+    if type(version) == str:
+        return re.sub(r"dev\d+\+(g[0-9a-f]+)(\.d\d+)?$", r"\1", version)
+    else:
+        print(version.__module__)
+        return get_metadata_version('armory')
+    # return version
 
 
 def generate_version():
-    _version = get_dynamic_version()
-    if _version is None:
-        _version = get_pip_version()
-    _version = trim_version(_version)
-    return _version
+    if (version := get_pyproject_version()) is not None:
+        return trim_version(version)
+    elif (version := get_metadata_version('armory')) is not None:
+        return trim_version(version)
+    elif (version := get_setuptools_version()) is not None:
+        return trim_version(version)
+    else:
+        raise RuntimeError("Unable to determine version number!")
+    return None

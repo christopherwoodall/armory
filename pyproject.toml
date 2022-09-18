@@ -4,7 +4,6 @@
 #   - https://python-poetry.org/docs/pyproject/
 #   - https://packaging.python.org/en/latest/specifications/
 #########################################
-
 [tool.poetry]
 name        = "armory"
 version     = "0.15.1"
@@ -28,6 +27,10 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+# packages = [
+#   { include = "tests",   format = ["sdist", "wheel"] },
+#   { include = "configs", format = ["sdist", "wheel"] },
+# ]
 
 
 [tool.poetry.scripts]
@@ -36,10 +39,11 @@ armory-cli = "armory.scenarios.main:run_config"
 
 
 [tool.poetry.dependencies]
+setuptools_scm = "*"
 python      = "^3.8"
+toml        = "0.10.2"
 pytest      = "^7.1.2"
-# docker      = "*"
-docker  = {extras = ["tls"], version = "*"}
+docker      = "*"
 podman      = "^4.0.0"
 loguru      = "*"
 requests    = "*"
@@ -139,9 +143,7 @@ markers = [
 #########################################
 [tool.vulture]
 paths             = ["src"]
-#exclude          = ["file*.py", "dir/"]
 ignore_decorators = ["#~vulture.ignore~#"]
-#ignore_names     = ["*.test.py"]
 min_confidence    = 80
 make_whitelist    = true
 sort_by_size      = true
@@ -152,9 +154,5 @@ verbose           = true
 # Build System
 #########################################
 [build-system]
-requires = ["poetry-core>=1.2.*"]
+requires = [ "poetry-core>=1.2.*" ]
 build-backend = "poetry.core.masonry.api"
-
-
-[tool.poetry-version-plugin]
-source = "init"
