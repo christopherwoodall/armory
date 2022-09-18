@@ -36,7 +36,9 @@ classifiers = [
 [tool.poetry.scripts]
 armory = "armory.cli.__main__:main"
 armory-cli = "armory.scenarios.main:run_config"
-armory-docker = "armory.cli.docker.main:main"
+armory-docker = "armory.cli.docker:main"
+armory-test = "armory.cli.ephemeral:main"
+
 
 [tool.poetry.dependencies]
 setuptools_scm = "*"

@@ -1,3 +1,16 @@
 
-def main()
-    print("Entrypoint into armory.scenarios.main - use armory-docker command to run and manage containers.")
+try:
+    from armory.cli import CLI
+except Exception as e:
+    print(f"ERROR: {e}", file=sys.stderr)
+    sys.exit(5)
+
+
+class EphemeralCLI(CLI):
+    def process(self, args):
+        # super(EphemeralCLI, self).setup()
+        ...
+
+
+def main():
+    EphemeralCLI().process(None)
