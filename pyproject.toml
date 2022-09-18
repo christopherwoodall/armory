@@ -156,3 +156,7 @@ verbose           = true
 [build-system]
 requires = [ "poetry-core>=1.2.*" ]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry-version-plugin]
+source = "git-tag"
