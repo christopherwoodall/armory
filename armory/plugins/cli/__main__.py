@@ -17,6 +17,7 @@ import sys
 
 import docker
 from jsonschema import ValidationError
+from pathlib import Path
 
 import armory
 
@@ -26,7 +27,7 @@ from armory import paths
 from armory import arguments
 from armory.configuration import load_global_config, save_config
 from armory.eval import Evaluator
-from armory.docker import images
+from armory.plugins.docker import images
 from armory.utils.configuration import load_config, load_config_stdin
 import armory.logs
 
@@ -356,7 +357,9 @@ def run(command_args, prog, description) -> int:
             log.info("Reading config from stdin...")
             config = load_config_stdin()
         else:
-            config = load_config(args.filepath)
+            todo = Path(os.getcwd()).parent
+            filepath = Path(f"{todo}/{args.filepath}")
+            config = load_config(filepath)
     except ValidationError as e:
         log.error(
             f"Could not validate config: {e.message} @ {'.'.join(e.absolute_path)}"

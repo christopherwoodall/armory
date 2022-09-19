@@ -33,6 +33,7 @@ def load_config(filepath: str) -> dict:
     """
     Loads and validates a config file
     """
+    print(filepath)
     with open(filepath) as f:
         config = json.load(f)
 

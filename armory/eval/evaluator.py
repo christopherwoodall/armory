@@ -12,14 +12,20 @@ import sys
 import requests
 
 import armory
+
+from armory import (
+    paths,
+    environment
+)
+
 from armory.configuration import load_global_config
-from armory.docker import images
-from armory.docker.management import ManagementInstance, ArmoryInstance
-from armory.docker.host_management import HostManagementInstance
 from armory.utils.printing import bold, red
-from armory import paths
-from armory import environment
 from armory.logs import log, is_debug, added_filters
+
+# TODO: Executor should not relay on docker
+from armory.plugins.docker import images
+from armory.plugins.docker.management import ManagementInstance, ArmoryInstance
+from armory.plugins.docker.host_management import HostManagementInstance
 
 
 class Evaluator(object):
