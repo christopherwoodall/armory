@@ -5,10 +5,22 @@
 #   - https://projects.gentoo.org/python/guide/distutils.html
 #########################################
 [build-system]
-requires = [
-  "hatchling>=1.8.0",
-]
+requires      = [ "hatchling>=1.8.0", "hatch-vcs" ]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "VERSION.txt"
+
+[tool.hatch.build]
+include = [
+  "armory/",
+  "tests/",
+  "VERSION.txt",
+]
+exclude = [ "tools/", ]
 
 
 [project]
@@ -127,20 +139,6 @@ host = [
 # ffmpeg-python = "0.2.0"         # Needed for armory.utils.export
 # opencv-python = "4.6.0.66"      # Needed for CARLA baseline scenario
 # hydra-lightning = { git = "https://github.com/romesco/hydra-lightning.git" }
-]
-
-[tool.hatch.version]
-path = "VERSION.txt"
-pattern = "(?P<version>.+)"
-
-[tool.hatch.build]
-include = [
-  "armory/",
-  "tests/",
-  "VERSION.txt",
-]
-exclude = [
-  "tools/",
 ]
 
 
