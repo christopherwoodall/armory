@@ -6,6 +6,6 @@ Tools and scripts to setup an `Armory` development enviroment.
 env-setup
 ---------
 
-`. ./tools/hacking/venv-setup`
+`. ./tools/bin/hacking.setup.sh`
 
 
