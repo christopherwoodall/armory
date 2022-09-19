@@ -13,7 +13,7 @@ __all__ = (
     'armory'
 )
 
-__version__ = Path(Path(__file__).parent / 'VERSION').read_text().strip()
+__version__ = Path(Path(__file__).parent.parent / 'VERSION.txt').read_text().strip()
 
 
 # typedef for a widely used JSON-like configuration specification
