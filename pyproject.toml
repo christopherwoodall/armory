@@ -36,13 +36,14 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
   "setuptools",
-  "toml",
   "pytest > 7.1.2",
   "docker",
   "podman > 4.0.0",
   "loguru",
   "requests",
-  "jsonschema"
+  "jsonschema",
+  "toml",
+  "pyyaml",
 ]
 
 [project.urls]
@@ -69,34 +70,34 @@ testsing = [
   # "tox = "^3.0"
 ]
 
-dataset = [
-# apache-beam = "2.22.0"
-# pydub       = "0.24.1"
-]
+# dataset = [
+#   - "apache-beam ~= 2.22.0",
+#   - "pydub ~= 0.24.1"
+# ]
 
-no-docker = [
-  #########################################################
-  # NOTE:  Currently, this only provides a `pytorch`
-  #        environment, covering the CIFAR-10 & CARLA
-  #        armory experiments.  A future release will be
-  #        more comprehensive.
-  #########################################################
-# adversarial-robustness-toolbox = "^1.11.*" # ART
-# torch        = "1.12.1"       # PyTorch
-# torchvision  = "0.13.1"       # PyTorch
-# torchaudio   = "0.12.1"       # PyTorch
-# tensorflow   = "2.10.0"       # TensorFlow
-# tensorboardx = "2.5.1"        # TensorFlow
-# tensorflow-datasets = "4.6.0" # TensorFlow
-# numpy      = "1.23.3"       # Numpy
-# scipy      = "1.9.1"        # Numpy
-# matplotlib = "3.5.3"        # Numpy
-# jupyterlab = "3.4.7"        # Jupyter Lab
-# Pillow     = "9.2.0"        # Data dependencies
-# boto3      = "1.24.72"       # Needed for armory.data.utils
-# ffmpeg-python = "0.2.0"     # Needed for armory.utils.export
-# opencv-python = "4.6.0.66"  # Needed for CARLA baseline scenario
-]
+# no-docker = [
+#   #########################################################
+#   # NOTE:  Currently, this only provides a `pytorch`
+#   #        environment, covering the CIFAR-10 & CARLA
+#   #        armory experiments.  A future release will be
+#   #        more comprehensive.
+#   #########################################################
+#   - "adversarial-robustness-toolbox >= 1.11" # ART
+#   - "torch == 1.12.1",              # PyTorch
+#   - "torchvision == 0.13.1",        # PyTorch
+#   - "torchaudio == 0.12.1",         # PyTorch
+#   - "tensorflow == 2.10.0",         # TensorFlow
+#   - "tensorboardx == 2.5.1",        # TensorFlow
+#   - "tensorflow-datasets == 4.6.0", # TensorFlow
+#   - "numpy == 1.23.3",              # Numpy
+#   - "scipy == 1.9.1",               # Numpy
+#   - "matplotlib == 3.5.3",          # Numpy
+#   - "jupyterlab == 3.4.7",          # Jupyter Lab
+#   - "Pillow == 9.2.0",              # Data dependencies
+#   - "boto3 == 1.24.72",             # Needed for armory.data.utils
+#   - "ffmpeg-python == 0.2.0",       # Needed for armory.utils.export
+#   - "opencv-python == 4.6.0.66",    # Needed for CARLA baseline scenario
+# ]
 
 host = [
 # #########################################################
@@ -144,11 +145,32 @@ exclude = [
 
 [tool.black]
 line-length = 120
-skip_magic_trailing_comma = true
+# skip_magic_trailing_comma = true
 
 
 #########################################
 # pytest
+#########################################
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts    = "-ra -q"
+log_level  = "ERROR"
+testpaths  = [ "tests" ]
+filterwarnings = []
+markers = [
+  "slow",                       # This test is slow
+  "online",                     # This test needs open internet access
+  "keras",                      # This test requires tf1.compat support for keras
+  "tf1",                        # This test requires tf1 support (tf2.compat.v1 adapter)
+  "docker_required",            # This Test Requires Docker to run
+  "end_to_end",                 # Full End to End Test (typically slow)
+  "unit",                       # These are Unit Tests (fast and lightweight)
+  "pytorch_deepspeech",         # This test requires pytorch-deepspeech docker container (or equivalent dependencies) to run
+]
+
+
+#########################################
+# pylint
 #########################################
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length=120
@@ -208,7 +230,7 @@ disable = [
   "simplifiable-if-expression",
   "use-list-literal",
 
-  #
+  # Immediate Review:
   "cyclic-import",
   "import-outside-toplevel",
   "deprecated-method",
@@ -217,23 +239,6 @@ disable = [
 max-args=7
 [tool.pylint.'SIMILARITIES']
 min-similarity-lines=6
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts    = "-ra -q"
-log_level  = "ERROR"
-testpaths  = [ "tests" ]
-filterwarnings = []
-markers = [
-  "slow",                       # This test is slow
-  "online",                     # This test needs open internet access
-  "keras",                      # This test requires tf1.compat support for keras
-  "tf1",                        # This test requires tf1 support (tf2.compat.v1 adapter)
-  "docker_required",            # This Test Requires Docker to run
-  "end_to_end",                 # Full End to End Test (typically slow)
-  "unit",                       # These are Unit Tests (fast and lightweight)
-  "pytorch_deepspeech",         # This test requires pytorch-deepspeech docker container (or equivalent dependencies) to run
-]
 
 
 #########################################
