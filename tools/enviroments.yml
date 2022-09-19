@@ -26,6 +26,37 @@ enviroments:
 
 
 packages:
+  # --------------------------------- Python ----------------------------------
+  python:
+    version: 3.9.7
+    channel: conda-forge
+
+  pip:
+
+  requests:
+
+
+  # --------------------------------- Conda -----------------------------------
+  conda:
+    channel: conda-forge
+    version:
+
+  conda-pack:
+    channel: conda-forge
+
+  mamba:
+    channel: conda-forge
+
+  # ---------------------------------- CUDA -----------------------------------
+  cudatoolkit:
+    version: ">11.3"
+    channel: conda-forge
+
+  cudnn:
+    version: ">8.0"
+    channel: conda-forge
+
+
   # Base REquirements
   loguru:
 
@@ -48,22 +79,6 @@ packages:
     version:
   click:
     version: 8.0.4
-
-
-  # Container
-  conda:
-    channel: conda-forge
-    version:
-
-  conda-pack:
-    channel: conda-forge
-
-  mamba:
-    channel: conda-forge
-
-  python:
-    version: 3.9.7
-    channel: conda-forge
 
 
   numba:
