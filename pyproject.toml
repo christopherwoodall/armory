@@ -1,28 +1,3 @@
-#########################################
-# Documentation:
-#   - https://peps.python.org/pep-0518/
-#   - https://packaging.python.org/en/latest/specifications/
-#   - https://projects.gentoo.org/python/guide/distutils.html
-#########################################
-[build-system]
-requires      = [ "hatchling>=1.8.0", "hatch-vcs" ]
-build-backend = "hatchling.build"
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build.hooks.vcs]
-version-file = "VERSION.txt"
-
-[tool.hatch.build]
-include = [
-  "armory/",
-  "tests/",
-  "VERSION.txt",
-]
-exclude = [ "tools/", ]
-
-
 [project]
 name = "armory"
 description = "Adversarial Robustness Test Bed"
@@ -141,15 +116,36 @@ host = [
 # hydra-lightning = { git = "https://github.com/romesco/hydra-lightning.git" }
 ]
 
+#########################################
+# Build System
+#########################################
+[build-system]
+requires      = [ "hatchling>=1.8.0", "hatch-vcs" ]
+build-backend = "hatchling.build"
 
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "VERSION.txt"
+
+[tool.hatch.build]
+include = [
+  "armory/",
+  "tests/",
+  "VERSION.txt",
+]
+exclude = [ "tools/", ]
+
+#########################################
+# Tools
+#########################################
+# ------------ black ------------
 [tool.black]
 line-length = 120
 # skip_magic_trailing_comma = true
 
-
-#########################################
-# pytest
-#########################################
+# ------------ pytest ------------
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts    = "-ra -q"
@@ -168,9 +164,7 @@ markers = [
 ]
 
 
-#########################################
-# pylint
-#########################################
+# ------------ pylint ------------
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length=120
 disable = [
@@ -240,9 +234,7 @@ max-args=7
 min-similarity-lines=6
 
 
-#########################################
-# Pre-commit Git Hooks
-#########################################
+# ------------ pre-commit hooks ------------
 [tool.vulture]
 paths             = ["src"]
 ignore_decorators = ["#~vulture.ignore~#"]
