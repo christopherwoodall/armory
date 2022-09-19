@@ -1,0 +1,53 @@
+name: armory
+
+prefix: /opt/conda
+
+channels:
+  - defaults
+  - conda-forge
+  - anaconda
+  - numba
+  - pytorch
+  # for channel in channels
+
+dependencies:
+  # --------------------------------- Pinned ----------------------------------
+  - conda-forge:python==3.9.7
+  # - cudatoolkit==11.3
+
+  # --------------------------------- Conda -----------------------------------
+  - conda-forge:conda
+  - conda-forge:conda-pack
+
+  # --------------------------------- Tools -----------------------------------
+  - conda-forge:ffmpeg
+
+  # -------------------------------- Jupyter ----------------------------------
+  - conda-forge:ipywidgets
+  - conda-forge:jupyterlab
+  - conda-forge:jupyterlab_widgets
+
+  # ----------------------------- Deep Learning -------------------------------
+  - adversarial-robustness-toolbox
+  - pytorch:pytorch==1.10.2
+  - pytorch:torchaudio
+  - pytorch:torchvision
+
+  # --------------------------- ML Additional libs ----------------------------
+  - conda-forge:matplotlib==3.*
+  - scikit-learn
+  - numba:numba
+  - pandas
+  - protobuf
+
+  # --------------------------------- TO DO -----------------------------------
+  - keras-gpu
+  # - anaconda::keras
+  # - anaconda::tensorboard
+  # - anaconda::tensorflow-gpu
+
+  - pip:
+    - docker
+    - pytest
+    - ffmpeg-python
+    - boto3

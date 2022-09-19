@@ -2,105 +2,175 @@
 
 enviroments:
   # Packaging
-  production:
-    installer: "pyproject"
+  #production:
+  #  installer: pyproject
 
-  # conda
-  pytorch:
-    installer: "conda"
-  tensorflow:
-    installer: "conda"
+  armory:
+    installer: conda
+    template:  conda-environment.template.yml
+    output:    conda-environment.yml
+
+  # container:
+  #   installer: docker
 
   # requirements.txt
   # docker + tests
   # development:
-  #  installer: "pip"
+  #  installer: pip
   # docker
-  minimal:
-    installer: "pip"
+  # minimal:
+  #  installer: pip
   # no-docker
   # full:
-  #  installer: "pip"
+  #  installer: pip
 
 
 packages:
-  # - <PACKAGE_NAME>: "<VERSION>"
-  #   channel: "<ANACONDA CHANNEL>"
-  #   installer: "<CONDA(default) OR PIP>"
-
   # Base REquirements
-  - loguru: ""
-  - docker: ""
-  - pytest: ""
-  - jsonschema: ""
-  - requests: ""
-  - tqdm: ""
+  loguru:
+
+  docker:
+    channel: pip
+
+  pytest:
+    channel: pip
+
+  jsonschema:
+
+  requests:
+
+  tqdm:
 
   # Development Requirements
-  - black[jupyter]: "22.*"
-  - flake8: ""
-  - click: "8.0.4"
+  black[jupyter]:
+    version: 22.*
+  flake8:
+    version:
+  click:
+    version: 8.0.4
 
-  # CUDA
-  # - cudatoolkit: "11.3"
+
+  # Container
+  conda:
+    channel: conda-forge
+    version:
+
+  conda-pack:
+    channel: conda-forge
+
+  mamba:
+    channel: conda-forge
+
+  python:
+    version: 3.9.7
+    channel: conda-forge
+
+
+  numba:
+    channel: numba
+
+  ffmpeg:
+    channel: conda-forge
+  # needed for armory.utils.export
+  ffmpeg-python:
+    channel: pip
+
+
+
+  ipython:
+    channel: conda-forge
+  ipywidgets:
+    channel: conda-forge
+  jupyterlab:
+    channel: conda-forge
+  jupyterlab_widgets:
+    channel: conda-forge
 
   # ART
-  - adversarial-robustness-toolbox: "1.10.3"
+  adversarial-robustness-toolbox:
 
   # PyTorch
-  - pytorch: "1.10.2"
-    channel: "pytorch"
-
-  - torch: "1.10.*"
-  - torchvision: "0.11.*"
-  - torchaudio: "0.10.*"
-  # pytorch-lightning==1.4.*
+  cudatoolkit:
+    version: 11.3
+    channel: pytorch
+  pytorch:
+    version: 1.10.2
+    channel: pytorch
+  pytorch-mutex:
+    channel: pytorch
+  torch:
+    version:
+  torchaudio:
+    channel: pytorch
+  torchvision:
+    channel: pytorch
 
   # TensorFlow
-  - tensorflow: "2.8.1"
-  - tensorflow-datasets: "4.5.*"
-  - tensorboardx: "2.4.*"
+  tensorflow:
+    version: 2.8.1
+  tensorflow-datasets:
+    version: 4.5.*
+  tensorboardx:
+    version: 2.4.*
 
   # Numpy
-  - numpy: "1.21.*"
-  - scipy: "1.7.*"
-  - matplotlib: "3.*"
-  - jupyterlab: "3.*"
+  numpy:
+    version: 1.21.*
 
+  scipy:
+    version: 1.7.*
+
+  matplotlib:
+    version: 3.*
+    channel: conda-forge
+
+  pandas:
+
+  protobuf:
+
+  scikit-learn:
 
   # Data dependencies
-  - Pillow: "9.0.*"
+  Pillow:
+    version: 9.0.*
 
   # Needed for armory.data.utils
-  - boto3: "1.20.*"
-    installer: "pip"
+  boto3:
+    version:
+    channel: pip
 
-  # needed for armory.utils.export
-  - ffmpeg-python: "0.2.0"
 
   # Needed for CARLA baseline scenario
-  - opencv-python: "4.5.5.62"
+  opencv-python:
+    version: 4.5.5.62
 
-  - python-levenshtein: ""
-  - hydra-core: ""
-  - google-cloud-storage: ""
-  - sox: ""
-  - apache-beam: "2.22.0"
-  - pydub: "0.24.1"
+  python-levenshtein:
+
+  hydra-core:
+
+  google-cloud-storage:
+
+  sox:
+
+  apache-beam:
+    version: 2.22.0
+
+  pydub:
+    version: 0.24.1
 
 
   # git:
   #   # PyTorch
-  #   git+https: "//github.com/romesco/hydra-lightning/#subdirectory=hydra-configs-pytorch-lightning
+  #   git+https: //github.com/romesco/hydra-lightning/#subdirectory=hydra-configs-pytorch-lightning
 
 
 # tf-models-official==2.8
-# protobuf=3  # Note: " Conda or binary install
+# protobuf=3  # Note:  Conda or binary install
 # #   The TF2 object detection API requires separate installation, which
 # #   is not simply handled by pip. Instructions can be found at
-# #   https: "//github.com/tensorflow/models/blob/79354e14a4b41ff9019f4a5ebd12cfa498917182/research/object_detection/packages/tf2/setup.py
+# #   https: //github.com/tensorflow/models/blob/79354e14a4b41ff9019f4a5ebd12cfa498917182/research/object_detection/packages/tf2/setup.py
 # #
-# #git clone https: "//github.com/tensorflow/models.git && cd models/research && git checkout 79354e14a4b41ff9019f4a5ebd12cfa498917182
+# #git clone https: //github.com/tensorflow/models.git && cd models/research && git checkout 79354e14a4b41ff9019f4a5ebd12cfa498917182
 # #cd models/research
 # #protoc object_detection/protos/*.proto --python_out=.
 # #cp object_detection/packages/tf2/setup.py .
