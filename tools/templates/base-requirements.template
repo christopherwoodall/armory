@@ -1,3 +1,5 @@
+# {AUTO_GENERATED_HEADER}
+
 #########################################################
 #           Armory No-Docker Requirements
 #
@@ -17,32 +19,12 @@
 #        more comprehensive.
 #########################################################
 
-# PyTorch
-torch==1.10.*
-torchvision==0.11.*
-torchaudio==0.10.*
+name: base-requirements.txt
 
-# TensorFlow
-tensorflow==2.8.1
-tensorflow-datasets==4.5.*
-tensorboardx==2.4.*
+packages:
+  - "loguru"
+  - "docker"
+  - "jsonschema"
+  - "requests"
+  - "pytest"   # needed by armory.scenarios.main line 93
 
-# Numpy
-numpy==1.21.*
-scipy==1.7.*
-matplotlib==3.*
-
-# ART
-adversarial-robustness-toolbox==1.10.3
-
-# Data dependencies
-Pillow==9.0.*
-
-# Needed for armory.data.utils
-boto3==1.20.*
-
-# needed for armory.utils.export
-ffmpeg-python==0.2.0
-
-# Needed for CARLA baseline scenario
-opencv-python==4.5.5.62
