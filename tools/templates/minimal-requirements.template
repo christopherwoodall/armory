@@ -1,7 +1,9 @@
-# {AUTO_GENERATED_HEADER}
+# {{ AUTO_GENERATED_HEADER }}
 
 #########################################################
 #           Armory No-Docker Requirements
+#
+#  name: base-txt
 #
 # In order to run armory purely in a python virtual
 # environment, you will need to setup a python environment
@@ -19,12 +21,9 @@
 #        more comprehensive.
 #########################################################
 
-name: base-requirements.txt
 
-packages:
-  - "loguru"
-  - "docker"
-  - "jsonschema"
-  - "requests"
-  - "pytest"   # needed by armory.scenarios.main line 93
-
+{{ loguru }}
+{{ docker }}
+{{ jsonschema }}
+{{ requests }}
+{{ pytest }}

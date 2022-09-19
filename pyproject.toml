@@ -44,6 +44,7 @@ dependencies = [
   "jsonschema",
   "toml",
   "pyyaml",
+  "jinja2",
 ]
 
 [project.urls]
