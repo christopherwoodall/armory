@@ -1,4 +1,7 @@
-# Docker
+# Armory Docker
+
+This is the Dockerfile used to build [armory]().
+
 Armory is intended to be a lightweight python package which standardizes all evaluations
 inside a docker container.
 
@@ -178,7 +181,7 @@ armory exec pytorch --gpus=0 -- nvidia-smi
 ### CUDA
 
 Armory docker images currently use CUDA 11.3 as the base image ( see [Dockerfile-Base](../docker/Dockerfile-base))
-and the TensorFlow versions we support require CUDA 10+. Previous versions of CUDA (e.g. CUDA<11.3) are not actively tested 
+and the TensorFlow versions we support require CUDA 10+. Previous versions of CUDA (e.g. CUDA<11.3) are not actively tested
 by armory developers or CI tools.  However, if previous versions of CUDA are needed, the following instructions should
 provide a decent starting point.
 
@@ -193,8 +196,8 @@ FROM nvidia/cuda:10.2-cudnn8-runtime-ubuntu18.04
 ```
 and then change `cudatoolkit=11.3 \` to `cudatoolkit=10.2 \`.
 
-Again, this is not actively tested, so it may require further modification of library dependencies to 
-work appropriately. Also, while PyTorch does support CUDA 9, we do not provide support in armory due to 
+Again, this is not actively tested, so it may require further modification of library dependencies to
+work appropriately. Also, while PyTorch does support CUDA 9, we do not provide support in armory due to
 TFDS dependencies and we do not recommend using versions less than the standard 11.3.
 
 ## Docker Setup
