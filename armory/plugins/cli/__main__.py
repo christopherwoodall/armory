@@ -357,6 +357,7 @@ def run(command_args, prog, description) -> int:
             log.info("Reading config from stdin...")
             config = load_config_stdin()
         else:
+            # TODO: do not assume we know where the command is being called from...
             todo = Path(os.getcwd()).parent
             filepath = Path(f"{todo}/{args.filepath}")
             config = load_config(filepath)
