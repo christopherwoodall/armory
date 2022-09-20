@@ -358,8 +358,9 @@ def run(command_args, prog, description) -> int:
             config = load_config_stdin()
         else:
             # TODO: do not assume we know where the command is being called from...
-            todo = Path(os.getcwd()).parent
-            filepath = Path(f"{todo}/{args.filepath}")
+            # todo = Path(os.getcwd()).parent
+            # filepath = Path(f"{todo}/{args.filepath}")
+            filepath = args.filepath
             config = load_config(filepath)
     except ValidationError as e:
         log.error(
