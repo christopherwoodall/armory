@@ -21,11 +21,11 @@ def versiontuple(version_str: str) -> tuple:
     return tuple(map(int, (version_str.split("."))))
 
 
-def trim_version(version_str: str) -> str:
+def trim_version(version_str: str = "0.0.0") -> str:
     git_tag_regex = re.compile(r"(?P<version>[vV]?\d+(?:\.\d+){0,2})")
     if (tag_match := git_tag_regex.match(version_str)) is not None:
         return tag_match.group("version")
-    return False
+    return version_str
 
 
 def get_metadata_version(package: str, version = None) -> str:
@@ -46,7 +46,7 @@ def get_metadata_version(package: str, version = None) -> str:
     raise RuntimeError(f"version.py was unable to find the specified package!")
 
 
-def get_version():
+def get_version() -> str:
     try:
         from armory.__about__ import VCS_VERSION
     except Exception as error:
