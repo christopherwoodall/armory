@@ -36,13 +36,9 @@ dependencies = [
   "docopt",
   "pytest > 7.1.2",
   "docker",
-  "podman > 4.0.0",
   "loguru",
   "requests",
   "jsonschema",
-  "toml",
-  "pyyaml",
-  "jinja2",
 ]
 
 [project.urls]
@@ -50,14 +46,20 @@ Source        = "https://github.com/twosixlabs/armory"
 Documentation = "https://github.com/twosixlabs/armory"
 
 [project.scripts]
-armory = "armory.plugins.cli.__main__:main"
-armory-cli = "armory.scenarios.main:run_config"
+armory        = "armory.plugins.cli.__main__:main"
+armory-cli    = "armory.scenarios.main:run_config"
 armory-docker = "armory.plugins.cli.docker:main"
-armory-test = "armory.plugins.cli.ephemeral:main"
+armory-test   = "armory.plugins.cli.ephemeral:main"
 
 
 [project.optional-dependencies]
-testsing = [
+# Example:
+#   $ pip install --force-reinstall --no-compile --progress-bar="emoji" --editable '.[testing]'
+developer =[
+  "toml",
+  "pyyaml",
+  "jinja2",
+  "podman > 4.0.0",
   "pre-commit >= 2.15.0",
   "pytest-cov ~= 3.0.0",
   "pytest-mock >= 3.5",

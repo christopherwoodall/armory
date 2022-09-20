@@ -15,7 +15,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # pip install
-pip install -e .
+pip install --force-reinstall --no-compile --progress-bar="emoji" --editable '.[developer]'
 
 # Get the VCS version
 TAG=`armory --version`
