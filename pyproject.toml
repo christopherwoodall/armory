@@ -6,28 +6,21 @@ description = "Adversarial Robustness Test Bed"
 dynamic     = [ "version" ]
 readme      = ".github/README.md"
 license     = "MIT"
-
 authors = [
   { name = "Two Six Technologies", email = "armory@twosixtech.com" },
 ]
 
 classifiers = [
   "Development Status :: 3 - Alpha",
-
   "License :: OSI Approved :: MIT License",
-
   "Environment :: Console",
-
   "Natural Language :: English",
-
   "Intended Audience :: Developers",
   "Intended Audience :: Education",
   "Intended Audience :: Science/Research",
-
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
-
   "Topic :: Utilities",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
@@ -147,9 +140,13 @@ version-file = "armory/__about__.py"
 include = [
   "armory/",
   "tests/",
-  "VERSION.txt",
+  "data/",
+  "docker",
 ]
-exclude = [ "tools/", ]
+exclude = [
+  "tools/",
+  "examples"
+]
 
 #########################################
 # Tools
