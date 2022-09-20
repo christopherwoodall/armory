@@ -17,7 +17,7 @@ import re
 from armory.logs import log
 
 
-def versiontuple(version_str: str) -> tuple:
+def version_tuple(version_str: str) -> tuple:
     return tuple(map(int, (version_str.split("."))))
 
 
@@ -54,10 +54,10 @@ def get_version() -> str:
 
     version = trim_version(VCS_VERSION)
 
-    if versiontuple(version) < versiontuple("0.0.0"):
+    if version_tuple(version) < version_tuple("0.0.0"):
         version = version_trim(get_metadata_version('armory'))
 
-    if versiontuple(version) > versiontuple("0.0.0"):
+    if version_tuple(version) > version_tuple("0.0.0"):
         return version
 
     log.error(f"Unable to parse version!")
