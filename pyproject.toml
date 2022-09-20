@@ -45,9 +45,13 @@ armory-docker = "armory.plugins.cli.docker:main"
 armory-test   = "armory.plugins.cli.ephemeral:main"
 
 
-[project.optional-dependencies]
+#########################################
+# Optional Dependencies
 # Example:
 #   $ pip install --force-reinstall --no-compile --progress-bar="emoji" --editable '.[testing]'
+#########################################
+[project.optional-dependencies]
+# ----------- developer ----------
 developer =[
   "toml",
   "pyyaml",
@@ -64,11 +68,13 @@ developer =[
   # "tox = "^3.0"
 ]
 
+# ------------ dataset -----------
 # dataset = [
 #   - "apache-beam ~= 2.22.0",
 #   - "pydub ~= 0.24.1"
 # ]
 
+# ----------- no-docker ----------
 # no-docker = [
 #   #########################################################
 #   # NOTE:  Currently, this only provides a `pytorch`
@@ -93,6 +99,7 @@ developer =[
 #   - "opencv-python == 4.6.0.66",    # Needed for CARLA baseline scenario
 # ]
 
+# ------------- host -------------
 host = [
 # #########################################################
 # # NOTE:  Install these dependencies if running in a
