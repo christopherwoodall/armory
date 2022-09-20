@@ -7,9 +7,11 @@ class RunCLI:
   def __init__(self):
     print("run imported")
 
+  def processCLI(self):
+    print("run processCLI")
 
 
-  def usage(self):
+  def usageCsLI(self):
     """
     Usage:
     armory [options]

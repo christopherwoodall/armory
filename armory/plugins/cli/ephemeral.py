@@ -8,7 +8,7 @@ import platform
 import importlib
 
 from pathlib import Path
-from inspect import getsourcefile, getmembers, isclass
+from inspect import getsourcefile, getmembers, isclass, isfunction
 
 
 try:
@@ -48,12 +48,27 @@ class EphemeralCLI(CLI):
         data    = self.commands[command]
         module  = self.module_loader(data['module'], data['path'])
 
-        import pprint
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(getmembers(module))
+        required_hooks = ("usageCLI", "processCLI")
 
-        module()     # module(self.args.pop())
-        return
+        if all(isfunction(getattr(module, hook, False)) for hook in required_hooks):
+            print('processCLI found!!!')
+            # module()     # module(self.args.pop())
+            # module().processCLI()
+            # module().usageCLI()
+            # print(module.usage.__doc__)
+        else:
+            print(f"ERROR: Missing required hooks in {data['path']}", file=sys.stderr)
+            print(f"ERROR: Required hooks: {', '.join(required_hooks)}", file=sys.stderr)
+            sys.exit(2)
+        return 0
+
+
+    def usage(self):
+        # loop commands, get __doc__ and print?
+        # import pprint
+        # pp = pprint.PrettyPrinter(indent=2)
+        # pp.pprint(getmembers(module))
+        ...
 
 
     def locate_commands(self):
@@ -76,7 +91,7 @@ class EphemeralCLI(CLI):
         spec   = importlib.util.spec_from_file_location(filepath.stem, path, loader=loader)
         try:
             module = getattr(importlib._bootstrap._load(spec), module_name, False)
-            if module:
+            if module and isclass(module):
                 return module
             else:
                 raise Exception(f"Error importing {module_name} module from {filepath}!")
