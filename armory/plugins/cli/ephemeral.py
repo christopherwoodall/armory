@@ -28,8 +28,8 @@ from armory.utils import (
 )
 
 
-APP_NAME           = "armory"   # Python 3.7.0# TODO: move to __about__.py or similar. -@woodall
-MIN_PYTHON_VERSION = (3, 7, 0)  # Python 3.7.0# TODO: move to __about__.py or similar. -@woodall
+APP_NAME           = "armory"   # TODO: move to __about__.py or similar. -@woodall
+MIN_PYTHON_VERSION = (3, 7, 0)  # TODO: move to __about__.py or similar. -@woodall
 BASE_PATH          = Path.cwd() # TODO: Import from CLI module -@woodall
 
 

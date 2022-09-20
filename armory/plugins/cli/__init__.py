@@ -12,8 +12,8 @@ global __modpath__
 __modpath__ = {getsourcefile(lambda:0)}
 
 
-APP_NAME           = "armory"   # Python 3.7.0# TODO: move to __about__.py or similar. -@woodall
-MIN_PYTHON_VERSION = (3, 7, 0)  # Python 3.7.0# TODO: move to __about__.py or similar. -@woodall
+APP_NAME           = "armory"   # TODO: move to __about__.py or similar. -@woodall
+MIN_PYTHON_VERSION = (3, 7, 0)  # TODO: move to __about__.py or similar. -@woodall
 
 
 class CLI(ABC):
