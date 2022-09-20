@@ -11,22 +11,17 @@ which also have a commit count and date in them like 1.0.1.dev2+g0c5ffd9.d202203
 which is a bit ungainly.
 """
 
-import os
-import re
-import sys
 
+import re
 
 from armory.logs import log
 
 
-def versiontuple(v):
-   filled = []
-   for point in v.split("."):
-      filled.append(point.zfill(8))
-   return tuple(filled)
+def versiontuple(version_str: str) -> tuple:
+    return tuple(map(int, (version_str.split("."))))
 
 
-def trim_version(version_str):
+def trim_version(version_str: str) -> str:
     git_tag_regex = re.compile(r"(?P<version>[vV]?\d+(?:\.\d+){0,2})")
     if (tag_match := git_tag_regex.match(version_str)) is not None:
         return tag_match.group("version")
@@ -54,9 +49,8 @@ def get_metadata_version(package: str, version = None) -> str:
 def get_version():
     try:
         from armory.__about__ import VCS_VERSION
-    except Exception as e:
-        print(f"ERROR: {e}", file=sys.stderr)
-        sys.exit(5)
+    except Exception as error:
+        raise error
 
     version = trim_version(VCS_VERSION)
 
