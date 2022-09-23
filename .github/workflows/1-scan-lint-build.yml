@@ -107,7 +107,8 @@ jobs:
 
       - name: 🖋️ mypy Type Checking
         run: |
-          pip install mypy
+          python3 -m pip install mypy
+          python3 -m pip install types-requests
           mypy                         \
             armory                     \
             --ignore-missing-imports   \
