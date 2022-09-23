@@ -17,10 +17,10 @@ import pathlib
 import subprocess
 
 try:
-    from importlib import metadata
-except (ModuleNotFoundError, ImportError):
+    from importlib.metadata import distribution, version, PackageNotFoundError
+except ModuleNotFoundError:
     # Python <= 3.7
-    import importlib_metadata as metadata  # type: ignore
+    from importlib_metadata import distribution, version, PackageNotFoundError  # type: ignore
 
 
 from armory.logs import log
