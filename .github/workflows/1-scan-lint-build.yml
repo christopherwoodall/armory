@@ -116,7 +116,6 @@ jobs:
             --show-error-codes         \
             --show-column-numbers      \
             --pretty                   \
-            --color-output             \
             > /tmp/artifacts/mypy.txt  \
           || $( exit 0 ); echo $?
 
