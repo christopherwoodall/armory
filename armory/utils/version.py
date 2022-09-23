@@ -42,7 +42,7 @@ def get_build_hook_version(version_str = '') -> str:
     try:
         from armory.__about__ import version_tuple
         return ".".join(map(str, version_tuple[:3]))
-    except Exception as error:
+    except ModuleNotFoundError:
         log.error(f"ERROR: Unable to extract version from __about__.py")
     return version_str
 
@@ -58,7 +58,7 @@ def get_metadata_version(package: str, version_str = '') -> str:
 def get_tag_version(version_str = '') -> str:
     # See: https://github.com/pypa/setuptools_scm/blob/main/src/setuptools_scm/git.py
     git_dir  = None
-    git_describe = [ "git", "describe", "--dirty", "--tags", "--long" ]
+    git_describe = ["git", "describe", "--dirty", "--tags", "--long"]
 
     for exec_path in (pathlib.Path(__file__), pathlib.Path.cwd()):
         if pathlib.Path(exec_path / ".git").is_dir():
@@ -84,10 +84,10 @@ def get_tag_version(version_str = '') -> str:
     return version_str
 
 
-def get_version() -> str:
-    version = get_metadata_version("armory")
-    if not bool(version):
-        version = get_build_hook_version()
-    if not bool(version):
-        version = get_tag_version()
-    return version or "0.0.0"
+def get_version(version_str = '') -> str:
+    version_str = get_metadata_version("armory")
+    if not bool(version_str):
+        version_str = get_build_hook_version()
+    if not bool(version_str):
+        version_str = get_tag_version()
+    return version_str or "0.0.0"
