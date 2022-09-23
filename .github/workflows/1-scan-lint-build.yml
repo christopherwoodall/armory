@@ -102,7 +102,12 @@ jobs:
               --show-source           \
               --color=always          \
               --config=.flake8        \
-                > /tmp/artifacts/flake8.txt
+              --output-file /tmp/artifacts/flake8.txt
+          # TODO: C901 - Determine if `# noqa: C901` is needed
+          #   python3 -m pip install astpretty
+          #   if flake8 code == C901:
+          #     astpretty(file) => save to artifacts
+
 
 
       - name: 🖋️ mypy Type Checking
