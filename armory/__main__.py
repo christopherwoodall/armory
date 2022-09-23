@@ -4,6 +4,12 @@ from importlib.metadata import distribution
 # TODO: ...try/catch for py 3.7 support?
 #       e.g. importlib_metadata
 
+# TODO:
+#    >>>  import armory.utils.container
+#    >>>  if container.where_am_i() == "host":
+#    >>>      main()
+#    >>>  else:
+#    >>>      you're in a container bro
 
 __all__ = ('__version__', 'Config')
 __version__ = "WIP"
