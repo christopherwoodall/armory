@@ -1,18 +1,19 @@
 ---
-name: End-to-End Tests
+name: ⏰ CRON Job - End-to-End Tests 📝➡️🖥️
 
 on:
   push:
     branches:
-      - master
-      - develop
+      - ci-testing
+      # - master
+      # - develop
 
-  pull_request:
-    branches:
-      - master
-      - develop
-  schedule:
-    - cron: 0 0 * * * # At Midnight Every Day
+  # pull_request:
+  #   branches:
+      # - master
+      # - develop
+  # schedule:
+  #   - cron: 0 0 * * * # At Midnight Every Day
 
 jobs:
   ignore:
