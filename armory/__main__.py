@@ -12,10 +12,10 @@ app_name = 'armory'
 
 
 def main():
-    dist      = distribution(app_name)
-    entry_map = {ep.name: ep for ep in dist.entry_points if ep.group == 'console_scripts'}
-    main = entry_map['armory-cli'].load()
-    main(sys.argv[1:])
+    dist       = distribution(app_name)
+    entry_map  = {ep.name: ep for ep in dist.entry_points if ep.group == 'console_scripts'}
+    entry_main = entry_map['armory-cli'].load()
+    entry_main(sys.argv[1:])
 
 
 if __name__ == '__main__':
