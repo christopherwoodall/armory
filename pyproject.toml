@@ -47,6 +47,9 @@ Documentation = "https://armory.readthedocs.io/en/latest/"
 [project.scripts]
 armory = "armory.__main__:main"
 
+armory-cli = "armory.cli.ephemeral:main"
+# armory-docker = "armory.cli.docker:main"
+
 
 [project.optional-dependencies]
 ####################### DEVELOPER #######################
