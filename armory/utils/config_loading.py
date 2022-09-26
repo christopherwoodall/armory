@@ -54,9 +54,8 @@ def load_dataset(dataset_config, *args, num_batches=None, check_run=False, **kwa
     If num_batches is None, this function will return a generator that iterates
     over the entire dataset.
     """
-    dataset_config = copy.deepcopy(
-        dataset_config
-    )  # Avoid modifying original dictionary
+    # Use `deepcopy` to avoid modifying original dictionary
+    dataset_config = copy.deepcopy(dataset_config)
     module = dataset_config.pop("module")
     dataset_fn_name = dataset_config.pop("name")
     batch_size = dataset_config.pop("batch_size", 1)
