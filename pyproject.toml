@@ -46,7 +46,7 @@ Documentation = "https://armory.readthedocs.io/en/latest/"
 
 [project.scripts]
 armory = "armory.__main__:main"
-armory-runner = "armory.scenarios.executor:main"
+armory-runner = "armory.scenarios.evaluator:main"
 
 
 [project.optional-dependencies]
@@ -79,9 +79,9 @@ developer =[
   # "docusaurus",
     # -------- configuration ---------
     "hydra-core",
-    # "hydra-zen",
     "omegaconf",
-    "pyrootutils",
+    # "hydra-zen",
+    # "pyrootutils",
 ]
 
 ######################## HOST ###########################
