@@ -3,11 +3,12 @@
 
 ```
 ─ configs                   <- Armory configuration files
+  ├── hydra.yml             <- Hydra config
+  │
   ├── callbacks             <- Callbacks configs
   ├── datamodule            <- Datamodule configs
   ├── extras                <- Extra utilities configs
   ├── hparams_search        <- Hyperparameter search configs
-  ├── hydra                 <- Hydra configs
   ├── local                 <- Local configs
   ├── logger                <- Logger configs
   ├── model                 <- Model configs
