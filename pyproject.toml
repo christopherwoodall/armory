@@ -46,8 +46,7 @@ Documentation = "https://armory.readthedocs.io/en/latest/"
 
 [project.scripts]
 armory = "armory.__main__:main"
-# TODO: Entypoint for armory run
-# armory-runner = "armory.scenarios__main__"
+armory-runner = "armory.scenarios.executor:main"
 
 
 [project.optional-dependencies]
