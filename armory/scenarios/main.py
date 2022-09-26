@@ -12,19 +12,21 @@ The particular scenario and configs will be picked up in the "scenario" field:
     This is used to instantiate the subclass.
 """
 
-import argparse
-import base64
-import importlib.resources
-import json
 import os
-import pytest
+import json
 import time
+import base64
+import argparse
+import pytest
+import importlib.resources
+
 
 import armory
 from armory import environment, paths, validation, Config
+from armory.logs import log, update_filters, make_logfiles
+
 from armory.utils import config_loading, external_repo
 from armory.utils.configuration import load_config
-from armory.logs import log, update_filters, make_logfiles
 
 
 def _scenario_setup(config: Config) -> None:
