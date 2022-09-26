@@ -1,4 +1,4 @@
 """
 Evaluation scenarios for novel defenses
 """
-from armory import delayed_imports
+# from armory import delayed_imports
