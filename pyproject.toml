@@ -79,8 +79,9 @@ developer =[
   # "docusaurus",
     # -------- configuration ---------
     "hydra-core",
-    "hydra-zen",
+    # "hydra-zen",
     "omegaconf",
+    "pyrootutils",
 ]
 
 ######################## HOST ###########################
