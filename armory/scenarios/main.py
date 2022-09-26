@@ -234,6 +234,6 @@ if __name__ == "__main__":
             skip_attack=args.skip_attack,
             skip_misclassified=args.skip_misclassified,
         )
-    print(
-        armory.END_SENTINEL
-    )  # indicates to host that the scenario finished w/out error
+
+    # indicates to host that the scenario finished w/out error
+    print(armory.END_SENTINEL)
