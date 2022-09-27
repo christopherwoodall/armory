@@ -1,4 +1,5 @@
 import sys
+import pathlib
 import argparse
 
 try:
@@ -8,10 +9,8 @@ except ModuleNotFoundError:
     from importlib_metadata import distribution  # type: ignore
 
 
-app_name = 'armory'
-
-
-def main():
+# Backwards compat for people still calling it from this package
+def main(app_name='armory'):
     dist       = distribution(app_name)
     entry_map  = {ep.name: ep for ep in dist.entry_points if ep.group == 'console_scripts'}
     entry_main = entry_map['armory-cli'].load()

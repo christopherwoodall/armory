@@ -1,20 +1,10 @@
+import re
 import sys
 import argparse
 
 from pathlib import Path
 
 
-def locate_commands():
-    skip_names = ("__init__.py", "__main__.py", "ephemeral.py", "old_cli.py")
-    commands = { f.stem: {
-            "path": f,
-            "name": f.stem,
-            "module": f"{f.stem.capitalize()}CLI",
-            "description": "No description available."
-        }
-        for f in Path(__file__).parent.iterdir() if f.is_file() and f.name not in skip_names
-    }
-    return commands
 
 
 # def dispatch(self):
@@ -55,60 +45,129 @@ def locate_commands():
 #         raise ImportError(path, sys.exc_info())
 
 
-# def usage(self):
-#     docstring_regex = r'^[\'\"]{3}(?P<docstring>.*?)[\"\']{3}'
 
-#     def parse_docstring(filepath, strict = False):
-#         content = filepath.read_text()
-#         if (docmatch := re.search(docstring_regex, content, re.DOTALL)) is not None:
-#             try:
-#                 return toml.loads(docmatch.group('docstring'))
-#             except Exception as e:
-#                 if strict:
-#                     raise e
-#         return None
 
-#     lines = [
-#         f"{APP_NAME} <command>\n",
-#         f"ARMORY Adversarial Robustness Evaluation Test Bed\n",
-#         f"https://github.com/twosixlabs/armory\n",
-#         f"Commands:\n",
-#         # Insert Command Here(index==4)
-#         f"    -v, --version - get current armory version\n",
-#         f"Run '{APP_NAME} <command> --help' for more information on a command.\n",
-#     ]
-#     line_index = 4
+try:
+    import tomllib  # Python 3.11
+except ImportError:
+    import toml     # Python 3.10
 
-#     for command, settings in self.commands.items():
-#         if (docstring := parse_docstring(settings['path'])) is not None:
-#             lines.insert(line_index, f"    {command} - {docstring['plugin']['description']}")
-#             line_index += 1
+from armory.cli import CLI
 
-#     return "\n".join(lines)
+
+class EmphemeralCLI(CLI):
+    name = "armory"
+    description = "ARMORY Adversarial Robustness Evaluation Test Bed"
+
+    def setup(self):
+        self.commands = self.locate_commands()
+
+        # self.config(
+        #     flags = [
+        #         (["-v", "--version"], {
+        #             "action":  "version",
+        #             "help":    "Show the version and exit.",
+        #             "version": self.version
+        #         }),
+        #         # (["-h", "--help"], {
+        #         #     "help":    "Show help message.",
+        #         #     "action":  "help",
+        #         #     "default": argparse.SUPPRESS,
+        #         #     "dest":    "help"
+        #         # }),
+        #     ],
+        #     # positional=[
+        #     #     {
+        #     #         'title': cmd,
+        #     #         'description':values['description']
+        #     #     }
+        #     #     for cmd, values in self.commands.items()
+        #     # ],
+        #     # actions=[]
+        #     # func=main
+        # )
+
+
+
+    def run(self):
+        # super(EmphemeralCLI, self).<METHOD>()
+        ...
+
+
+    def usage(self):
+
+        docstring_regex = r'^[\'\"]{3}(?P<docstring>.*?)[\"\']{3}'
+        commands = self.locate_commands()
+
+        def parse_docstring(filepath, strict = False):
+            content  = filepath.read_text()
+            docmatch = re.search(docstring_regex, content, re.DOTALL)
+            if docmatch is not None:
+                try:
+                    return toml.loads(docmatch.group('docstring'))
+                except Exception as e:
+                    if strict:
+                        raise e
+            return None
+
+        lines = [
+            f"armory <command>\n",
+            f"ARMORY Adversarial Robustness Evaluation Test Bed\n",
+            f"https://github.com/twosixlabs/armory\n",
+            f"Commands:\n",
+            # Insert Command Here(index==4)
+            f"    -v, --version - get current armory version\n",
+            f"Run 'armory <command> --help' for more information on a command.\n",
+        ]
+        line_index = 4
+
+        for command, settings in commands.items():
+            docstring = parse_docstring(settings['path'])
+            if docstring is not None:
+                lines.insert(line_index, f"    {command} - {docstring['plugin']['description']}")
+                line_index += 1
+
+        return "\n".join(lines)
+
+
+
+
+    def locate_commands(self):
+        skip_names = ("__init__.py", "__main__.py", "ephemeral.py", "old_cli.py")
+        commands   = { f.stem: {
+                "path": f,
+                "name": f.stem,
+                "module": f"{f.stem.capitalize()}CLI",
+                "description": "No description available."
+            }
+            for f in Path(__file__).parent.iterdir() if f.is_file() and f.name not in skip_names
+        }
+        return commands
+
+
+
+
+
+
+
 
 
 def main(args=sys.argv[1:]):
-    commands = locate_commands()
-    print(args)
-    if len(args) < 1 or args[0] not in commands:
-        # TODO: Print USAGE
-        print("Command not found.")
-        return
+    # EmphemeralCLI()
+    EmphemeralCLI.init()
+    # .launch()
+    # .enter()
+    # .trigger()
+    # .setup()
+    # .run()
+    # .initiate()
 
-    # TODO: Dispatch command with args
 
 
 if __name__ == "__main__":
-    # # Ensure correct location
-    # if not (root_dir / "armory").is_dir():
-    #     sys.exit(f"ERROR:\tEnsure this script is ran from the root of the armory repo.\n" \
-    #              f"\tEXAMPLE:\n"                                                          \
-    #              f"\t\t$ python3 {script_dir / 'build.py'}")
-
     # # Ensure docker/podman is installed
     # if not shutil.which(container_platform):
     #     sys.exit(f"ERROR:\tCannot find compatible container on the system.\n" \
     #              f"\tAsk your system administrator to install either `docker` or `podman`.")
 
     main()
-
