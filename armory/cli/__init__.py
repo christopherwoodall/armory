@@ -29,6 +29,18 @@ except Exception as e:
 
 
 class CLI(ABC):
+  '''CLI Module Base Class
+
+  The entry point for CLI modules is the class method `.init()`.
+
+  Example:
+    >>>  class CommandCLI(CLI):
+    >>>    def setup():
+    >>>      ...
+    >>>    def run():
+    >>>      ...
+    >>>   CommandCLI.init()
+  '''
   name        = None
   description = None
   version     = armory.__version__
@@ -44,9 +56,10 @@ class CLI(ABC):
     if len(args) >= 1:
       if args[1] in ('-h', '--help'):
         print(f"{self.usage()}")
+        sys.exit(0)
       if args[1] in ('-v', '--version'):
-         print(f"{self.version}")
-      sys.exit(0)
+        print(f"{self.version}")
+        sys.exit(0)
 
     self.cmd_path = Path.cwd()
     self.args     = args
@@ -103,15 +116,15 @@ class CLI(ABC):
 
 
   def module_loader(self, module_name: str, filepath: Path):
-  path   = str(filepath.absolute())
-  loader = importlib._bootstrap_external.SourceFileLoader(filepath.stem, path)
-  spec   = importlib.util.spec_from_file_location(filepath.stem, path, loader=loader)
-  try:
-    module = getattr(importlib._bootstrap._load(spec), module_name, False)
-    if module and isclass(module):
-      return module
-    else:
-      raise Exception(f"Error importing {module_name} module from {filepath}!")
-  except:
-    raise ImportError(path, sys.exc_info())
+    path   = str(filepath.absolute())
+    loader = importlib._bootstrap_external.SourceFileLoader(filepath.stem, path)
+    spec   = importlib.util.spec_from_file_location(filepath.stem, path, loader=loader)
+    try:
+      module = getattr(importlib._bootstrap._load(spec), module_name, False)
+      if module and isclass(module):
+        return module
+      else:
+        raise Exception(f"Error importing {module_name} module from {filepath}!")
+    except:
+      raise ImportError(path, sys.exc_info())
 
