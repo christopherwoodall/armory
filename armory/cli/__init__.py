@@ -20,8 +20,6 @@ try:
 except Exception as e:
     raise Exception(f"Error importing Armory module from {__file__}!")
 
-from armory.cli.parsing import helpers
-
 
 # if sys.version_info < (3, 7):
 #     raise SystemExit(
