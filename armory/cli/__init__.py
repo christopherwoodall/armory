@@ -4,7 +4,7 @@ import argparse
 import importlib
 
 from abc import ABC, abstractmethod
-from inspect import getmembers, isclass, isfunction
+from inspect import getsourcefile, getmembers, isclass, isfunction
 from pathlib import Path
 
 try:
@@ -19,6 +19,13 @@ try:
     import armory
 except Exception as e:
     raise Exception(f"Error importing Armory module from {__file__}!")
+
+# import armory.logs
+
+
+global __modpath__
+__modpath__ = {getsourcefile(lambda:0)}
+
 
 
 # if sys.version_info < (3, 7):
@@ -38,6 +45,8 @@ class CLI(ABC):
     >>>    def setup():
     >>>      ...
     >>>    def run():
+    >>>      ...
+    >>>   def usage():
     >>>      ...
     >>>   CommandCLI.init()
   '''
@@ -69,22 +78,24 @@ class CLI(ABC):
 
   @classmethod
   def init(cls, args=None, exit_code=0):
+    print(cls.__name__) ## DEBUG TODO
     if args is None:
       args = sys.argv
-    try:
-      cli   = cls(args)
-      setup = cli.setup()
-      exit_code = cli.run()
-    except KeyboardInterrupt:
-      # log.warn("Execution interrupted(KeyboardInterrupt)")
-      exit_code = 1
-    except Exception as e:
-      # log.error(e)
-      # TODO: Show stacktrace(in debug mode), start `pdb`, and enter post mortem.
-      exit_code = 1
+    # try:
+    cli   = cls(args)
+    setup = cli.setup()
+    exit_code = cli.run()
+    # except KeyboardInterrupt:
+    #   # log.warn("Execution interrupted(KeyboardInterrupt)")
+    #   exit_code = 1
+    # except Exception as e:
+    #   # log.error(e)
+    #   # TODO: Show stacktrace(in debug mode), start `pdb`, and enter post mortem.
+    #   exit_code = 1
     sys.exit(exit_code)
 
 
+  # TODO: Should this be abstract?
   @abstractmethod
   def setup():
     raise NotImplementedError("Method not implemented!")
