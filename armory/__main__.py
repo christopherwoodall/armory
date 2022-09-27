@@ -14,7 +14,7 @@ def main(app_name='armory'):
     dist       = distribution(app_name)
     entry_map  = {ep.name: ep for ep in dist.entry_points if ep.group == 'console_scripts'}
     entry_main = entry_map['armory-cli'].load()
-    entry_main(sys.argv[1:])
+    entry_main(sys.argv)
 
 
 if __name__ == '__main__':
