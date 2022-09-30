@@ -130,11 +130,12 @@ all = [
 build-backend = "hatchling.build"
 requires = [
   "hatchling>=1.10.0",
-  "hatch-vcs @ file://../tools/hooks/hatch-vcs",
+  # "hatch-vcs @ file://../tools/hooks/hatch-vcs",
+  "hatch-vcs"
 ]
 
 [tool.hatch.version]
-source = "hatch-vcs"
+source = "vcs"
 path   = "armory/__about__.py"
 
 [tool.hatch.version.raw-options]
