@@ -11,8 +11,9 @@ which also have a commit count and date in them like 1.0.1.dev2+g0c5ffd9.d202203
 which is a bit ungainly.
 '''
 
-import shutil
-import subprocess
+import os
+import setuptools_scm
+
 from pathlib import Path
 
 try:
@@ -27,16 +28,6 @@ from armory.logs import log
 def to_docker_tag(version_str: str) -> str:
     '''Convert version string to docker tag'''
     return version_str.replace('+', '.')
-
-
-def normalize_git_version(git_output: str) -> str:
-    '''Normalizes `git describe` output for pip.
-    NOTE: This does not add a `+build` tag if pulled from a tagged release.
-    '''
-    normalized_version = git_output.strip().lstrip('v')
-    normalized_version = [part.lstrip('g') for part in normalized_version.split('-')]
-    normalized_version = '+build'.join(normalized_version[0::2])
-    return normalized_version
 
 
 def get_build_hook_version(version_str: str = '') -> str:
@@ -59,20 +50,27 @@ def get_metadata_version(package: str, version_str: str = '') -> str:
 
 def get_tag_version(git_dir: Path = None) -> str:
     '''Retrieve the version from the most recent git tag'''
-    if shutil.which('git') is None:
-        raise RuntimeError('git is not installed')
-    git_describe = subprocess.run(
-        ['git', 'describe', '--tags'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=True,
-    )
-    if bool(git_describe.returncode) or not bool(git_describe.stdout):
-        raise RuntimeError('Unable to retrieve git tag')
-    return normalize_git_version(git_describe.stdout.decode('utf-8'))
+    scm_config = {
+        'root': git_dir,
+        'relative_to': __file__,
+        'version_scheme': "post-release",
+    }
+    if git_dir is None:
+        for exec_path in (Path(__file__), Path.cwd()):
+            if Path(exec_path / ".git").is_dir():
+                scm_config['root'] = exec_path
+                break
+    # Unable to find `.git` directory...
+    if scm_config['root'] is None:
+        log.error("ERROR: Unable to find `.git` directory!")
+        return
+    return setuptools_scm.get_version(**scm_config)
 
 
 def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
+    # TODO: "ARMORY_DEV_MODE" environment variable
+    if os.getenv('ARMORY_DEV_MODE'):
+        return get_tag_version()
     version_str = get_metadata_version(package_name)
     if not bool(version_str):
         version_str = get_build_hook_version()
