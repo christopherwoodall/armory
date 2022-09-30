@@ -57,6 +57,7 @@ def get_tag_version(git_dir: Path = None) -> str:
         'root': git_dir,
         'relative_to': __file__,
         'version_scheme': "post-release",
+        'local_scheme': "node-and-date",
     }
     if git_dir is None:
         for exec_path in (Path(__file__), Path.cwd()):
