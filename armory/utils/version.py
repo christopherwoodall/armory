@@ -17,7 +17,6 @@ import site
 import setuptools_scm
 
 from pathlib import Path
-from packaging.version import Version
 
 try:
     from importlib import metadata
@@ -80,11 +79,6 @@ def developer_mode_version(package_name: str, pretend_version: str = None) -> st
     version_str = pretend_version or get_tag_version()
     version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
     package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')][0]
-
-    try:
-        version_str = str(Version(version_str))
-    except ValueError:
-        log.error(f'Version {version_str} is not PEP 440 compliant')
 
     if pretend_version:
         # log.info(f'Spoofing version {pretend_version} for {package_name}')
