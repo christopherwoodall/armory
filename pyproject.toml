@@ -125,18 +125,16 @@ all = [
     "armory-testbed[pytorch,tensorflow,deepspeech,jupyter]",
 ]
 
-#########################################
+
 # Build System
-#   Versioning Documentation:
-#     - https://microsoft.github.io/nlp-recipes/VERSIONING.html
-#########################################
 [build-system]
-requires = ["hatchling>=1.10.0", "setuptools"]
+requires = ["hatchling>=1.10.0", "versioneer"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-source = "code"
-path   = "setup.py"
+# source = "code"
+# path   = "setup.py"
+path = "armory/__about__.py"
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -155,11 +153,15 @@ exclude = [
   "tools/",
 ]
 
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+# versionfile_source = "armory/__about__.py"
+versionfile_build = "armory/__about__.py"
+tag_prefix = ""
+parentdir_prefix = ""
 
-#########################################
 # Tools
-#########################################
-# ------------ bandit -----------
 [tool.bandit]
 recursive = true
 targets = [ "armory" ]
