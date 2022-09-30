@@ -12,9 +12,12 @@ which is a bit ungainly.
 '''
 
 import os
+import re
+import site
 import setuptools_scm
 
 from pathlib import Path
+from packaging.version import Version
 
 try:
     from importlib import metadata
@@ -67,33 +70,42 @@ def get_tag_version(git_dir: Path = None) -> str:
     return setuptools_scm.get_version(**scm_config)
 
 
-def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
-    # TODO: "ARMORY_DEV_MODE" environment variable
-    # ARMORY_DEV_MODE=1 armory --version
-    if os.getenv('ARMORY_DEV_MODE'):
-        import re
-        import site
+def developer_mode_version(package_name: str, pretend_version: str = None) -> str:
+    '''Return the version in developer mode
+    EXAMPLE:
+        $ ARMORY_DEV_MODE=1 ARMORY_PRETEND_VERSION="1.2.3" armory --version
+    '''
+    old_version = get_metadata_version(package_name)
+    version_str = pretend_version or get_tag_version()
+    version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
+    package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')][0]
 
-        version_str = get_tag_version()
-        version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
-        package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')][0]
+    try:
+        version_str = str(Version(version_str))
+    except ValueError:
+        log.error(f'Version {version_str} is not PEP 440 compliant')
 
-        for site in site.getsitepackages():
-            package_data = Path(site / package_meta)
-            if package_data.exists():
-                break
-
-        package_update = re.sub(version_regex, fr'\g<prefix>{version_str}', package_data.read_text(), flags=re.MULTILINE)
-        package_data.write_text(package_update)
-
-
-        print(f"SCM Version: {version_str}")
-        print(f"Metadata Version: {get_metadata_version(package_name)}")
-
+    if pretend_version:
+        log.info(f'Spoofing version {pretend_version} for {package_name}')
         return version_str
-    # version_str = get_metadata_version(package_name)
-    # if not bool(version_str):
-    #     version_str = get_build_hook_version()
-    # if not bool(version_str):
-    #     version_str = get_tag_version()
-    # return version_str or "0.0.0"
+
+    for site_path in site.getsitepackages():
+        metadata_path = Path(site_path / package_meta)
+        if package_data.exists():
+            break
+    metadata_update = re.sub(version_regex, fr'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)
+    metadata_path.write_text(metadata_update)
+
+    log.info(f'Version updated from {old_version} to {version_str}')
+    return version_str
+
+
+def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
+    if os.getenv('ARMORY_DEV_MODE'):
+        return developer_mode_version(package_name, os.getenv('ARMORY_PRETEND_VERSION'))
+    version_str = get_metadata_version(package_name)
+    if not bool(version_str):
+        version_str = get_build_hook_version()
+    if not bool(version_str):
+        version_str = get_tag_version()
+    return version_str or "0.0.0"
