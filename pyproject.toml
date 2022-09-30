@@ -130,8 +130,7 @@ all = [
 build-backend = "hatchling.build"
 requires = [
   "hatchling>=1.10.0",
-  # "hatch-vcs @ file://../tools/hooks/hatch-vcs",
-  "hatch-vcs"
+  "hatch-vcs",
 ]
 
 [tool.hatch.version]
@@ -151,9 +150,6 @@ __version__ = {version!r}
 version_tuple = {version_tuple!r}
 """
 
-[tool.hatch.metadata]
-allow-direct-references = true
-
 [tool.hatch.build]
 ignore-vcs   = false
 reproducible = true
@@ -167,6 +163,9 @@ include = [
 exclude = [
   "tools/",
 ]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 
 # Tools
