@@ -88,17 +88,21 @@ def developer_mode_version(
     if pretend_version:
         log.info(f'Spoofing version {pretend_version} for {package_name}')
         return version_str
-
     if update_metadata:
         version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
-        package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')]
+        [package_meta] = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')] or False
         if not package_meta:
-            log.error(f'ERROR: Unable to find package metadata for {package_name}')
+            log.error(f'Unable to find package metadata for {package_name}')
+            return version_str
         for path in site.getsitepackages():
-            metadata_path = Path(path / package_meta[0])
+            metadata_path = Path(path / package_meta)
             if metadata_path.is_file():
                 break
-        metadata_update = re.sub(version_regex, f'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)  # noqa
+        metadata_update = re.sub(
+            version_regex,
+            f'\g<prefix>{version_str}',  # noqa
+            metadata_path.read_text(),
+            flags=re.M)
         metadata_path.write_text(metadata_update)
         log.info(f'Version updated from {old_version} to {version_str}')
 
