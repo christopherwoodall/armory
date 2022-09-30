@@ -57,23 +57,20 @@ def cli_parser(argv=sys.argv[1:]):
 
 def get_tag_version(git_dir: Path = None) -> str:
     '''Retrieve the version from the most recent git tag'''
+    project_paths = [Path(__file__).parent.parent, Path.cwd()]
+    git_dir = list(filter(lambda path: Path(path / ".git").is_dir(), project_paths))
     scm_config = {
         'root': git_dir,
         'relative_to': __file__,
         'version_scheme': "post-release",
         'local_scheme': "node-and-date",
     }
-    if git_dir is None:
-        for exec_path in (Path(__file__), Path.cwd()):
-            if Path(exec_path / ".git").is_dir():
-                scm_config['root'] = exec_path
-                break
-    # Unable to find `.git` directory...
-    if scm_config['root'] is None:
+    if not git_dir:
         log.error("ERROR: Unable to find `.git` directory!")
         return
-    scm_version = setuptools_scm.get_version(**scm_config)
-    return scm_version.replace("+", ".")
+    scm_config.update({'root': git_dir[0]})
+    # Note: The replace is used to convert the version to a valid docker tag.
+    return setuptools_scm.get_version(**scm_config).replace("+", ".")
 
 
 def build_worker(framework, version, platform, base_tag, **kwargs):
