@@ -110,16 +110,35 @@ def developer_mode_version(
     return version_str
 
 
+def editable_install(project_root: Path = None) -> bool:
+    '''Return the version in editable mode'''
+    project_root = project_root or Path(__file__).parent.parent
+    return Path(project_root / "README.md").exists()
+
+
+
+
 @functools.lru_cache(maxsize=1, typed=False)
 def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
-    if os.getenv('ARMORY_DEV_MODE'):
-        pretend_version = os.getenv('ARMORY_PRETEND_VERSION')
-        update_metadata = os.getenv('ARMORY_UPDATE_METADATA')
-        return developer_mode_version(package_name, pretend_version, update_metadata)
+    if editable_install(Path(__file__).parent.parent):
+        # git/.git exists
+        # scm version
+        # update project metadata
+        # -----
+        # project metadata
+        # ------
+        # __about__.py
+        ...
 
-    version_str = get_build_hook_version()
-    if not version_str:
-        version_str = get_metadata_version(package_name)
-    if not version_str:
-        version_str = get_tag_version()
-    return version_str
+    return '0.0.0'
+    # if os.getenv('ARMORY_DEV_MODE'):
+    #     pretend_version = os.getenv('ARMORY_PRETEND_VERSION')
+    #     update_metadata = os.getenv('ARMORY_UPDATE_METADATA')
+    #     return developer_mode_version(package_name, pretend_version, update_metadata)
+
+    # version_str = get_build_hook_version()
+    # if not version_str:
+    #     version_str = get_metadata_version(package_name)
+    # if not version_str:
+    #     version_str = get_tag_version()
+    # return version_str
