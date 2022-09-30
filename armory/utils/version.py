@@ -81,17 +81,17 @@ def developer_mode_version(package_name: str, pretend_version: str = None) -> st
     package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')][0]
 
     if pretend_version:
-        # log.info(f'Spoofing version {pretend_version} for {package_name}')
+        log.info(f'Spoofing version {pretend_version} for {package_name}')
         return version_str
 
     for site_path in site.getsitepackages():
         metadata_path = Path(site_path / package_meta)
         if metadata_path.exists():
             break
-    metadata_update = re.sub(version_regex, fr'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)
+    metadata_update = re.sub(version_regex, fr'\g<prefix>{version_str!r}', metadata_path.read_text(), flags=re.M)
     metadata_path.write_text(metadata_update)
 
-    # log.info(f'Version updated from {old_version} to {version_str}')
+    log.info(f'Version updated from {old_version} to {version_str}')
     return version_str
 
 
