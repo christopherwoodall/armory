@@ -69,11 +69,31 @@ def get_tag_version(git_dir: Path = None) -> str:
 
 def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
     # TODO: "ARMORY_DEV_MODE" environment variable
+    # ARMORY_DEV_MODE=1 armory --version
     if os.getenv('ARMORY_DEV_MODE'):
-        return get_tag_version()
-    version_str = get_metadata_version(package_name)
-    if not bool(version_str):
-        version_str = get_build_hook_version()
-    if not bool(version_str):
+        import re
+        import site
+
         version_str = get_tag_version()
-    return version_str or "0.0.0"
+        version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
+        package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')][0]
+
+        for site in site.getsitepackages():
+            package_data = Path(site / package_meta)
+            if package_data.exists():
+                break
+
+        package_update = re.sub(version_regex, fr'\g<prefix>{version_str}', package_data.read_text(), flags=re.MULTILINE)
+        package_data.write_text(package_update)
+
+
+        print(f"SCM Version: {version_str}")
+        print(f"Metadata Version: {get_metadata_version(package_name)}")
+
+        return version_str
+    # version_str = get_metadata_version(package_name)
+    # if not bool(version_str):
+    #     version_str = get_build_hook_version()
+    # if not bool(version_str):
+    #     version_str = get_tag_version()
+    # return version_str or "0.0.0"
