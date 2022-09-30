@@ -22,7 +22,7 @@ try:
     from importlib import metadata
 except ModuleNotFoundError:
     # Python <= 3.7
-    from importlib_metadata import version, PackageNotFoundError  # noqa
+    import importlib_metadata as metadata # noqa
 
 from armory.logs import log
 
@@ -50,71 +50,70 @@ def get_build_hook_version(version_str: str = '') -> str:
     return version_str
 
 
-# def get_tag_version(git_dir: Path = None) -> str:
-#     import armory
-
-#     # getattr(armory, '__path__', False)
-#     # Path(__file__), Path.cwd()
-#     print(Path(__file__).parent.parent)
-#     if git_dir is None:
-#         for exec_path in (Path(__file__), Path.cwd()):
-#             if Path(exec_path / ".git").is_dir():
-#                 git_dir = exec_path
-#                 break
-
 def get_tag_version(git_dir: Path = None) -> str:
     '''Retrieve the version from the most recent git tag'''
+    project_paths = [Path(__file__).parent.parent, Path.cwd()]
+    git_dir = list(filter(lambda path: Path(path / ".git").is_dir(), project_paths))
     scm_config = {
         'root': git_dir,
         'relative_to': __file__,
         'version_scheme': "post-release",
         'local_scheme': "node-and-date",
     }
-    if git_dir is None:
-        for exec_path in (Path(__file__), Path.cwd()):
-            if Path(exec_path / ".git").is_dir():
-                scm_config['root'] = exec_path
-                break
-    # Unable to find `.git` directory...
-    if scm_config['root'] is None:
+    if not git_dir:
         log.error("ERROR: Unable to find `.git` directory!")
         return
-    return setuptools_scm.get_version(**scm_config)
+    scm_config.update({'root': git_dir[0]})
+    return setuptools_scm.get_version(**scm_config).replace("+", ".")
 
 
-def developer_mode_version(package_name: str, pretend_version: str = None) -> str:
+def developer_mode_version(
+        package_name: str,
+        pretend_version: str = False,
+        update_metadata: bool = False) -> str:
     '''Return the version in developer mode
-    EXAMPLE:
+
+    Args:
+        param1 (int): The first parameter.
+        package_name (str): The name of the package.
+        pretend_version (str): The version to pretend to be.
+        update_metadata (bool): Whether to update the metadata.
+
+    Example:
         $ ARMORY_DEV_MODE=1 ARMORY_PRETEND_VERSION="1.2.3" armory --version
     '''
     old_version = get_metadata_version(package_name)
     version_str = pretend_version or get_tag_version()
-    version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
-    package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')][0]
 
     if pretend_version:
         log.info(f'Spoofing version {pretend_version} for {package_name}')
         return version_str
 
-    for site_path in site.getsitepackages():
-        metadata_path = Path(site_path / package_meta)
-        if metadata_path.exists():
-            break
-    metadata_update = re.sub(version_regex, f'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)
-    metadata_path.write_text(metadata_update)
+    if update_metadata:
+        version_regex = r'(?P<prefix>^Version: )(?P<version>.*)$'
+        package_meta = [f for f in metadata.files(package_name) if str(f).endswith('METADATA')]
+        if not package_meta:
+            log.error(f'ERROR: Unable to find package metadata for {package_name}')
+        for path in site.getsitepackages():
+            metadata_path = Path(path / package_meta[0])
+            if metadata_path.is_file():
+                break
+        metadata_update = re.sub(version_regex, f'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)
+        metadata_path.write_text(metadata_update)
+        log.info(f'Version updated from {old_version} to {version_str}')
 
-    log.info(f'Version updated from {old_version} to {version_str}')
     return version_str
 
 
 def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
-    # version_str = get_tag_version()
-    # return version_str or "0.0.0"
     if os.getenv('ARMORY_DEV_MODE'):
-        return developer_mode_version(package_name, os.getenv('ARMORY_PRETEND_VERSION'))
+        pretend_version = os.getenv('ARMORY_PRETEND_VERSION')
+        update_metadata = os.getenv('ARMORY_UPDATE_METADATA')
+        return developer_mode_version(package_name, pretend_version, update_metadata)
+
     version_str = get_build_hook_version()
-    if not bool(version_str):
+    if not version_str:
         version_str = get_metadata_version(package_name)
-    if not bool(version_str):
+    if not version_str:
         version_str = get_tag_version()
-    return version_str or "0.0.0"
+    return version_str
