@@ -98,7 +98,7 @@ def developer_mode_version(
             metadata_path = Path(path / package_meta[0])
             if metadata_path.is_file():
                 break
-        metadata_update = re.sub(version_regex, f'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)
+        metadata_update = re.sub(version_regex, f'\g<prefix>{version_str}', metadata_path.read_text(), flags=re.M)  # noqa
         metadata_path.write_text(metadata_update)
         log.info(f'Version updated from {old_version} to {version_str}')
 
