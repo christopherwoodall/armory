@@ -66,7 +66,7 @@ def get_tag_version(git_dir: Path = None) -> str:
         'local_scheme': "node-and-date",
     }
     if not git_dir:
-        log.error("ERROR: Unable to find `.git` directory!")
+        sys.exit("ERROR: Unable to find `.git` directory!")
         return
     scm_config.update({'root': git_dir[0]})
     # Note: The replace is used to convert the version to a valid docker tag.
