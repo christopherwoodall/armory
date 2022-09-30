@@ -50,6 +50,18 @@ def get_build_hook_version(version_str: str = '') -> str:
     return version_str
 
 
+# def get_tag_version(git_dir: Path = None) -> str:
+#     import armory
+
+#     # getattr(armory, '__path__', False)
+#     # Path(__file__), Path.cwd()
+#     print(Path(__file__).parent.parent)
+#     if git_dir is None:
+#         for exec_path in (Path(__file__), Path.cwd()):
+#             if Path(exec_path / ".git").is_dir():
+#                 git_dir = exec_path
+#                 break
+
 def get_tag_version(git_dir: Path = None) -> str:
     '''Retrieve the version from the most recent git tag'''
     scm_config = {
@@ -96,11 +108,13 @@ def developer_mode_version(package_name: str, pretend_version: str = None) -> st
 
 
 def get_version(package_name: str = 'armory-testbed', version_str: str = '') -> str:
+    # version_str = get_tag_version()
+    # return version_str or "0.0.0"
     if os.getenv('ARMORY_DEV_MODE'):
         return developer_mode_version(package_name, os.getenv('ARMORY_PRETEND_VERSION'))
-    version_str = get_metadata_version(package_name)
+    version_str = get_build_hook_version()
     if not bool(version_str):
-        version_str = get_build_hook_version()
+        version_str = get_metadata_version(package_name)
     if not bool(version_str):
         version_str = get_tag_version()
     return version_str or "0.0.0"
