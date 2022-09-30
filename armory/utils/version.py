@@ -32,21 +32,21 @@ def to_docker_tag(version_str: str) -> str:
     return version_str.replace('+', '.')
 
 
-def get_metadata_version(package: str, version_str: str = '') -> str:
-    '''Retrieve the version from the package metadata'''
-    try:
-        return str(metadata.version(package))
-    except metadata.PackageNotFoundError:
-        log.error(f"ERROR: Unable to find the specified package! Package {package} not installed.")
-    return version_str
-
-
 def get_build_hook_version(version_str: str = '') -> str:
     '''Retrieve the version from the build hook'''
     try:
         from armory.__about__ import __version__ as version_str
     except ModuleNotFoundError:
         log.error("ERROR: Unable to extract version from __about__.py")
+    return version_str
+
+
+def get_metadata_version(package: str, version_str: str = '') -> str:
+    '''Retrieve the version from the package metadata'''
+    try:
+        return str(metadata.version(package))
+    except metadata.PackageNotFoundError:
+        log.error(f"ERROR: Unable to find the specified package! Package {package} not installed.")
     return version_str
 
 
