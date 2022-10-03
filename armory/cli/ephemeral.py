@@ -19,17 +19,20 @@ class EmphemeralCLI(CLI):
 
     def setup(self):
         self.commands = self.locate_commands()
-        if self.args[1] not in self.commands:
-            print(f"{self.usage()}")
-            return 1
+        # if self.args[0] not in self.commands:
+        #     print(f"{self.usage()}")
+        #     # TODO: return (message, exit_code)
+        #     return 1
+        return 1
 
 
     def run(self):
-        command = self.args[1]
-        data    = self.commands[command]
-        module  = self.module_loader(data['module'], data['path'])
-        return module.init(args=self.args)
-        # return module.init(args=self.args[1:])
+        command = self.args[0]
+        data = self.commands.get(command, False)
+        if data:
+            module  = self.module_loader(data['module'], data['path'])
+            return module.init(args=self.args)
+        sys.exit(f"{self.usage()}")
 
 
     def usage(self):
@@ -74,8 +77,8 @@ class EmphemeralCLI(CLI):
         return None
 
 
-def main(args=sys.argv[1:]):
-    EmphemeralCLI.init()
+def main(args=sys.argv):
+    EmphemeralCLI.init(args)
 
 
 if __name__ == "__main__":

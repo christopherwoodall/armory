@@ -55,35 +55,21 @@ class CLI(ABC):
   version     = armory.__version__
 
   def __init__(self, args, callback=None):
-    args = args or []
-
-    if len(args) <= 1:
-      print(f"{self.usage()}")
-      sys.exit(0)
-
-    if len(args) >= 1:
-      if args[1] in ('-h', '--help'):
-        print(f"{self.usage()}")
-        sys.exit(0)
-      if args[1] in ('-v', '--version'):
-        print(f"{self.version}")
-        sys.exit(0)
-
+    args = args or sys.argv
+    self.args = args = args[1:] if len(args) else []
     self.cmd_path = Path.cwd()
-    self.args     = args
-    self.parser   = None
+
+    self.parser = None
     self.callback = callback
 
+    self.exit_code = 1
 
-  @classmethod
-  def init(cls, args=None, exit_code=0):
-    print(cls.__name__) ## DEBUG TODO
-    if args is None:
-      args = sys.argv
     # try:
-    cli   = cls(args)
-    setup = cli.setup()
-    exit_code = cli.run()
+    print("CLI:__init__ => start") ## DEBUG
+    # TODO: check function signatures
+    setup = self.setup()
+    if setup:
+      self.exit_code = self.run()
     # except KeyboardInterrupt:
     #   # log.warn("Execution interrupted(KeyboardInterrupt)")
     #   exit_code = 1
@@ -91,7 +77,21 @@ class CLI(ABC):
     #   # log.error(e)
     #   # TODO: Show stacktrace(in debug mode), start `pdb`, and enter post mortem.
     #   exit_code = 1
-    sys.exit(exit_code)
+    print("CLI:__init__ => exit") ## DEBUG
+    sys.exit(self.exit_code)
+
+
+  @classmethod
+  def init(cls, args=None, exit_code=0):
+    # TODO: loader; check that issubclass(cls, CLI)
+    # TODO: Manager
+    # self.plugins = {}
+    # self.plugins['commands'] = {}
+    args = args or sys.argv
+    print(args)
+    cli = cls(args)
+    # issubclass(cls, CLI) or sys.exit(1)
+    return cli
 
 
   # TODO: Should this be abstract?
@@ -111,6 +111,7 @@ class CLI(ABC):
 
 
   def config(self, positional=None, flags=None, func=None):
+    print('config') ## DEBUG
     parser = self.parser = argparse.ArgumentParser(prog=self.name, description=self.description)
     if func:
       parser.set_defaults(func=init)
@@ -118,11 +119,42 @@ class CLI(ABC):
       for position in positional:
         subparsers = parser.add_subparsers(**position)
     if flags:
-      for args, kwargs in flags:
-        parser.add_argument(*args, **kwargs)
+      for arg, kwargs in flags:
+        parser.add_argument(*arg, **kwargs)
     if HAS_ARGCOMPLETE:
       argcomplete.autocomplete(self.parser)
-    self.args = self.parser.parse_args(self.args)
+
+    # TODO: Does not fail gracefully if given junk args
+    print(self.args)
+
+    # TODO: Move somwhere...
+    # Help/Version check
+    help_flags = ('help', '--help', '-h', '/h', '?', '/?', )
+    # TODO: exit to return
+    if len(self.args) == 0:
+      print(f"{self.usage()}")
+      sys.exit(1)
+    if self.args[0] in help_flags:
+      print(f"{self.usage()}")
+      sys.exit(0)
+    if self.args[0] in ('-v', '--version'):
+      print(f"{self.version}")
+      sys.exit(0)
+
+
+    # TODO: Add usage prefix: `armory <command>`
+    # TODO
+    # args = argparse.Namespace()
+    # args.func = func
+    # print(getattr(args, 'func', None))
+    # self.args = args
+    # return self.args
+    argvs, leftovers = self.parser.parse_known_args(self.args)
+    args = self.args
+
+    self.args = argvs
+    # # self.args = self.parser.parse_args(self.args)
+
 
 
   def module_loader(self, module_name: str, filepath: Path):
@@ -138,3 +170,14 @@ class CLI(ABC):
     except:
       raise ImportError(path, sys.exc_info())
 
+
+
+class PluginManager:
+  def __init__(self, path: Path, module_name: str):
+    ...
+
+
+class Plugin:
+  @classmethod
+  def load(cls, path: Path, module_name: str):
+    ...
