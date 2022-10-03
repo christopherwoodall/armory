@@ -55,8 +55,7 @@ class CLI(ABC):
   version     = armory.__version__
 
   def __init__(self, args, callback=None):
-    if not args:
-      raise ValueError('A non-empty list for args is required')
+    args = args or []
 
     if len(args) <= 1:
       print(f"{self.usage()}")
