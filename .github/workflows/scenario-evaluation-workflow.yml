@@ -3,11 +3,18 @@
 name: 💻 Full Scenario Evaluation
 
 on:
-  workflow_call:
-  # workflow_dispatch:
   push:
     branches:
       - test-results-check-1148
+
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+
 
 jobs:
   matrix_generator:
@@ -45,6 +52,7 @@ jobs:
 
       # - name: Install Prerequisites
       #   run: |
+      #   # hatch --env armory --no-interactive --data-dir
       #     source .venv/bin/activate
 
       - name: 🚀 Run Scenario Evaluation
@@ -65,6 +73,12 @@ jobs:
           path: |
             ~/.armory/outputs/
             /tmp/artifacts
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   timeout-minutes: 15
+      #   if: ${{ failure() && github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
 
   # debugger:

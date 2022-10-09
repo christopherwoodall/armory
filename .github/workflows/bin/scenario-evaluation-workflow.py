@@ -26,7 +26,7 @@ class ScenarioWorkflow(Workflow):
       raise ValueError("Invalid command!")
 
     self.config['app']['command'] = self.config['args'][0]
-    self.config['app']['scenario_path'] = Path(self.config['args'][1]),
+    self.config['app']['scenario_path'] = self.config['args'][1],
     self.config['app']['result_path'] = armory_paths.runtime_paths().output_dir
 
     self.results = matrix = {
@@ -61,12 +61,20 @@ class ScenarioWorkflow(Workflow):
 
 
   def run_scenario(self):
-      scenario = self.config['app']['scenario_path']
+    scenario = ''.join(self.config['app']['scenario_path'])
 
-      runner = get_scenario(scenario, check_run=True).load()
-      scenario_log_path, scenario_log_data = runner.evaluate()
+    runner = get_scenario(scenario, check_run=True).load()
+    scenario_log_path, scenario_log_data = runner.evaluate()
+    return (self.ordered(json.loads(Path(scenario_log_path).read_text())) == self.ordered(scenario_log_data))
 
-      print(scenario_log_data)
+
+  def ordered_json(self, obj):
+    if isinstance(obj, dict):
+      return sorted((k, ordered(v)) for k, v in obj.items())
+    if isinstance(obj, list):
+      return sorted(ordered(x) for x in obj)
+    else:
+      return obj
 
 
 if __name__ == "__main__":
