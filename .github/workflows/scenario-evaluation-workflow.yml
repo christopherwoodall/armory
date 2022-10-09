@@ -5,7 +5,9 @@ name: 💻 Full Scenario Evaluation
 on:
   workflow_call:
   # workflow_dispatch:
-
+  push:
+    branches:
+      - test-results-check-1148
 
 jobs:
   matrix_generator:
