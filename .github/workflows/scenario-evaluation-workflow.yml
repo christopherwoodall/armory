@@ -47,7 +47,8 @@ jobs:
       #   run: |
       #     source .venv/bin/activate
 
-      - run: |
+      - working-directory: .github/workflows/
+        run: |
           echo "${{ matrix.scenario_path }}"
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
@@ -71,33 +72,6 @@ jobs:
   #       shell: python
   #       run: |
   #         print(__import__(os).environ)
-
-
-      #   # working-directory: .github/workflows/
-      #   env:
-      #     ENV_PRODUCTION: false
-      #   run: |
-      #     echo "::set-output name=matrix::$(find ./scenario_configs -type f -name "*.json" | jq -cnR '[inputs | select(length>0)]')"
-
-      #     # python ./bin/scenario-evaluation-workflow.py generate-matrix "${GITHUB_WORKSPACE}/scenario_configs"
-      #     #SCENARIO_STR=`python ./bin/scenario-evaluation-workflow.py run-scenario "${GITHUB_WORKSPACE}/scenario_configs"`
-      #     # echo SCENARIO_STR=$SCENARIO_STR >> $GITHUB_ENV
-      #     # echo "::set-output name=matrix::${SCENARIO_STR}"
-
-      # - name: 📝 Echo Environs
-      #   shell: python
-      #   run: |
-      #     print(__import__('os').environ)
-
-  # matrix_runner:
-  #     - name: 🤞 Running Evals
-  #       env:
-  #         PYTEST_PARAMS: --exitfirst --suppress-no-test-exit-code
-  #       shell: bash
-  #       run: |
-  #         echo "Testing Python Version: ${{ matrix.python-version }}"
-  #         pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
-
 
   # debugger:
   #   name: Debugger
