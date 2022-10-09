@@ -65,7 +65,8 @@ class DockerPaths:
 class HostDefaultPaths:
     def __init__(self):
         self.cwd = os.getcwd()
-        self.user_dir = os.path.expanduser("~")
+        #TODO: Revert:
+        self.user_dir = os.getenv("ARMORY_INSTALL", "/tmp") or os.path.expanduser("~")
         self.armory_dir = os.path.join(self.user_dir, ".armory")
         self.armory_config = os.path.join(self.armory_dir, "config.json")
         self.dataset_dir = os.path.join(self.armory_dir, "datasets")

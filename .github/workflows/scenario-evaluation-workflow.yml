@@ -52,7 +52,6 @@ jobs:
 
       # - name: Install Prerequisites
       #   run: |
-      #   # hatch --env armory --no-interactive --data-dir
       #     source .venv/bin/activate
 
       - name: 🚀 Run Scenario Evaluation
@@ -68,16 +67,15 @@ jobs:
           export HOME=$OLD_HOME
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
 
-      - name: 📁 Archiving Artifacts
-        uses: actions/upload-artifact@v3
-        # if: ${{ !failure() }}
-        continue-on-error: true
-        with:
-          name: evaluation-artifacts
-          retention-days: 1
-          path: |
-            ~/.armory/outputs/
-            /tmp/artifacts
+      # - name: 📁 Archiving Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   # if: ${{ !failure() }}
+      #   continue-on-error: true
+      #   with:
+      #     name: evaluation-artifacts
+      #     retention-days: 1
+      #     path: |
+      #       /tmp
 
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       # - name: Setup tmate session
