@@ -78,7 +78,8 @@ jobs:
 
           mkdir -p "${SCENARIO_DIR}"
 
-          cp {./tests/,/tmp/.armory/}scenario-evaluation-config.json
+          mkdir -p "${HOME}/.armory"
+          cp ./tests/scenario-evaluation-config.json "${HOME}/.armory/scenario-evaluation-config.json"
 
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
       # | tee "${SCENARIO_DIR}/scenario_evaluation.log"
@@ -98,7 +99,7 @@ jobs:
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
+        timeout-minutes: 5
         if: ${{ failure() && github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
 
