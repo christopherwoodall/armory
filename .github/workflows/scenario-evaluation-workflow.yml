@@ -60,7 +60,8 @@ jobs:
         working-directory: .github/workflows/
         run: |
           echo "${{ matrix.scenario_path }}"
-          python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
+          # TODO: Automatic directory creation should be handled differently...
+          sudo python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
 
       - name: 📁 Archiving Artifacts
