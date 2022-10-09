@@ -9,6 +9,18 @@ on:
 
   workflow_dispatch:
     inputs:
+      tactic_dir:
+        type: choice
+        description: 'Tactic Directory'
+        required: false
+        default: 1000-evaluation
+        options:
+        - 10-reconnaissance
+        - 20-resource-development
+        - '...'
+        - 120-impact
+        - 1000-evaluation
+
       debug_enabled:
         type: boolean
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
@@ -59,6 +71,7 @@ jobs:
         working-directory: .github/workflows/
         env:
           ARMORY_INSTALL: "/tmp"
+          HOME: "/tmp"
         run: |
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
@@ -71,8 +84,8 @@ jobs:
           name: evaluation-artifacts
           retention-days: 1
           path: |
-            ~/.armory
-            /tmp
+            /tmp/scenario_evaluation.log
+            /tmp/.armory/outputs
 
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       - name: Setup tmate session
