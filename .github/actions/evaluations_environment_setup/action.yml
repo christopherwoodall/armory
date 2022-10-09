@@ -24,8 +24,8 @@ runs:
       run: |
         pip install --no-compile --editable '.[developer,engine,math,datasets,pytorch]'
         cp {.github/workflows/tests/,/tmp/}scenario-evaluation-config.json
-      # TODO: The above is a work around. Should also have an install config in the proj root.
         armory configure --use-defaults
+      # TODO: The above is a work around. Should also have an install config in the proj root.
 
     - name: 🐍 Load Cached Venv
       id: cache
