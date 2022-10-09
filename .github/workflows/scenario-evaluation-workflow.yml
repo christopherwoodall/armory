@@ -78,7 +78,9 @@ jobs:
 
           mkdir -p "${SCENARIO_DIR}"
 
-          mkdir -p "${HOME}/.armory"
+          mkdir -p "${HOME}/armory/outputs/"
+          mkdir -p "${HOME}/.armory/"
+
           cp ./tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
 
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
