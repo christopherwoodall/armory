@@ -42,12 +42,10 @@ jobs:
 
       - name: Setup Environment
         uses:  ./.github/actions/evaluations_environment_setup
-        # with:
-        #   cache_version: ${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
 
-      - name: Install Prerequisites
-        run: |
-          source $VENV
+      # - name: Install Prerequisites
+      #   run: |
+      #     source .venv/bin/activate
 
       - run: |
           echo "${{ matrix.scenario_path }}"
