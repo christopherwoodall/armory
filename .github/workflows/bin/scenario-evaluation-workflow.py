@@ -65,7 +65,8 @@ class ScenarioWorkflow(Workflow):
     armory_paths.set_mode('host')
 
     runner = get_scenario(scenario, check_run=True).load()
-    scenario_log_path, scenario_log_data = runner.evaluate()
+    runner.evaluate()
+    scenario_log_path, scenario_log_data = runner.save()
     try:
       return (self.ordered_json(json.loads(Path(scenario_log_path).read_text())) == self.ordered_json(scenario_log_data))
     except:

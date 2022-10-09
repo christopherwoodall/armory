@@ -404,8 +404,6 @@ class Scenario:
         if self.results is None:
             log.warning(f"{self._evaluate} did not set self.results to a dict")
 
-        return self.save()
-
     def prepare_results(self) -> dict:
         """
         Return the JSON results blob to be used in save() method
@@ -433,7 +431,7 @@ class Scenario:
         scenario_name = override_name if override_name else output["config"]["scenario"]["name"]
         filename = f"{scenario_name}_{output['timestamp']}.json"
 
-        file_output = Path(f"{self.scenario_output_dir/{filename}")
+        file_output = Path(f"{self.scenario_output_dir}/{filename}")
         file_output.parent.mkdir(parents=True, exist_ok=True)
 
         log.info(
