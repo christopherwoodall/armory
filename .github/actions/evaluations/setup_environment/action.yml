@@ -3,7 +3,6 @@ name: "Setup Matrix and Armory"
 
 description: "Install Armory"
 
-
 runs:
   using: "composite"
   steps:
