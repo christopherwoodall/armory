@@ -61,8 +61,11 @@ class ScenarioWorkflow(Workflow):
 
 
   def run_scenario(self):
+      scenario = self.config['app']['scenario_path']
+
       runner = get_scenario(scenario, check_run=True).load()
       scenario_log_path, scenario_log_data = runner.evaluate()
+
       print(scenario_log_data)
 
 
