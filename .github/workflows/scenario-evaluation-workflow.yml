@@ -77,6 +77,7 @@ jobs:
           SCENARIO_DIR="/tmp/${SCENARIO_PATH}"
 
           mkdir -p "${SCENARIO_DIR}"
+          mkdir -p "/tmp/logs"
 
           mkdir -p "${HOME}/armory/outputs/"
           mkdir -p "${HOME}/.armory/"
