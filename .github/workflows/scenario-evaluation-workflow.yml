@@ -40,14 +40,16 @@ jobs:
       - name: 🐄 Got git?
         uses: actions/checkout@v3
 
-      - name: Setup Environment
+      - name: 🐍 Setup Environment
         uses:  ./.github/actions/evaluations_environment_setup
 
       # - name: Install Prerequisites
       #   run: |
       #     source .venv/bin/activate
 
-      - working-directory: .github/workflows/
+      - name: 🚀 Run Scenario Evaluation
+        timeout-minutes: 30
+        working-directory: .github/workflows/
         run: |
           echo "${{ matrix.scenario_path }}"
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
@@ -64,14 +66,6 @@ jobs:
             ~/.armory/outputs/
             /tmp/artifacts
 
-  # debugger:
-  #   name: Debugger
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: 📝 Echo Environs
-  #       shell: python
-  #       run: |
-  #         print(__import__(os).environ)
 
   # debugger:
   #   name: Debugger
@@ -81,4 +75,3 @@ jobs:
   #       shell: python
   #       run: |
   #         print(__import__(os).environ)
-
