@@ -66,7 +66,10 @@ class ScenarioWorkflow(Workflow):
 
     runner = get_scenario(scenario, check_run=True).load()
     scenario_log_path, scenario_log_data = runner.evaluate()
-    return (self.ordered(json.loads(Path(scenario_log_path).read_text())) == self.ordered(scenario_log_data))
+    try:
+      return (self.ordered_json(json.loads(Path(scenario_log_path).read_text())) == self.ordered_json(scenario_log_data))
+    except:
+      return False
 
 
   def ordered_json(self, obj):
