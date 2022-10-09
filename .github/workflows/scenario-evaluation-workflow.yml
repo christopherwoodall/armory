@@ -94,7 +94,8 @@ jobs:
           retention-days: 1
           path: |
             /tmp/scenario_evaluation.log
-            /tmp/.armory/outputs
+            /tmp/armory/outputs/
+            /tmp/.armory/outputs/
 
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       - name: Setup tmate session
