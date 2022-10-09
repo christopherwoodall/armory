@@ -1,0 +1,39 @@
+---
+name: "Setup Matrix and Armory"
+
+description: "Install Armory"
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: 🐍 Use Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: 🌱 Setup Test Enviroment
+      run: |
+        python -m pip install --upgrade pip
+
+    - name: ⚙️ Installing Armory
+      shell: bash
+      run: |
+        pip install --no-compile --editable '.[developer]'
+        armory configure --use-defaults
+
+    - name: Load cached venv
+      id: cache
+      uses: actions/cache@v2.1.6
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+
+    # - name: ⚙️ Installing Armory
+    #   shell: bash
+    #   if: steps.cache.outputs.cache-hit != 'true'
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install --no-compile --editable '.[developer]'
+    #     armory configure --use-defaults
+    #   # pip install --no-compile --editable '.[developer,engine,math,datasets,pytorch]'
