@@ -78,7 +78,7 @@ jobs:
 
           mkdir -p "${SCENARIO_DIR}"
 
-          cp {.github/workflows/tests/,/tmp/.armory/}scenario-evaluation-config.json
+          cp {./tests/,/tmp/.armory/}scenario-evaluation-config.json
 
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
       # | tee "${SCENARIO_DIR}/scenario_evaluation.log"
