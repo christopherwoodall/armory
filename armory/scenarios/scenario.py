@@ -2,9 +2,10 @@
 Primary class for scenario
 """
 
-import copy
 import os
 import sys
+import copy
+import json
 import time
 from typing import Optional
 from pathlib import Path
