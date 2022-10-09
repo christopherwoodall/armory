@@ -427,23 +427,24 @@ class Scenario:
         Write results JSON file to Armory scenario output directory
         """
         output = self.prepare_results()
-
         override_name = output["config"]["sysconfig"].get("output_filename", None)
-        scenario_name = (
-            override_name if override_name else output["config"]["scenario"]["name"]
-        )
+        scenario_name = override_name if override_name else output["config"]["scenario"]["name"]
         filename = f"{scenario_name}_{output['timestamp']}.json"
+
+        _output_dir = Path(self.scenario_output_dir).parent
+        file_output = Path(_output_dir / f"{scenario_name}/{filename}")
+        file_output.parent.mkdir(parents=True, exist_ok=True)
+
         log.info(
             "Saving evaluation results to path "
             f"{self.scenario_output_dir}/{filename} "
             "inside container."
         )
-        output_path = os.path.join(self.scenario_output_dir, filename)
-        with open(output_path, "w") as f:
-            json_utils.dump(output, f)
-        if os.path.getsize(output_path) > 2**27:
+
+        file_output.write_text(json.dumps(output, indent=4))
+        if os.path.getsize(file_output) > 2**27:
             log.warning(
                 "Results json file exceeds 128 MB! "
                 "Recommend checking what is being recorded!"
             )
-        return (output_path, output)
+        return (file_output, output)
