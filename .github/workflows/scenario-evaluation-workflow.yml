@@ -83,7 +83,7 @@ jobs:
 
           cp ./tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
 
-          python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee "${HOME}/armory/scenario_evaluation.log"
+          python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee "/tmp/logs/${SCENARIO_PATH}_scenario_evaluation.log"
       # | tee "${SCENARIO_DIR}/scenario_evaluation.log"
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
 
@@ -95,7 +95,7 @@ jobs:
           name: evaluation-artifacts
           retention-days: 1
           path: |
-            /tmp/scenario_evaluation.log
+            /tmp/logs/
             /tmp/armory/outputs/
             /tmp/.armory/outputs/
 
