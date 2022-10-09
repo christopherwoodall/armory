@@ -60,11 +60,11 @@ jobs:
         run: |
           echo "${{ matrix.scenario_path }}"
           # TODO: Work around for config
-          OLD_HOME=$HOME
-          export HOME=/tmp
+          # OLD_HOME=$HOME
+          # export HOME=/tmp
           # TODO: Automatic directory creation should be handled differently...
           python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
-          export HOME=$OLD_HOME
+          # export HOME=$OLD_HOME
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
 
       # - name: 📁 Archiving Artifacts

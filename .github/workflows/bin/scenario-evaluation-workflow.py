@@ -62,6 +62,7 @@ class ScenarioWorkflow(Workflow):
 
   def run_scenario(self):
     scenario = ''.join(self.config['app']['scenario_path'])
+    armory_paths.set_mode('host')
 
     runner = get_scenario(scenario, check_run=True).load()
     scenario_log_path, scenario_log_data = runner.evaluate()
