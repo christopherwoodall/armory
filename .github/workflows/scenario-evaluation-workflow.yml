@@ -43,7 +43,7 @@ jobs:
       - name: 👩‍💻 Generating Matrix
         id: generate-matrix
         run: |
-          echo "::set-output name=matrix::$(find ./scenario_configs -type f -name "*.json" | jq -cnR '[inputs | select(length>0)]')"
+          echo "::set-output name=matrix::$(find ./scenario_configs/eval6 -type f -name "*.json" | jq -cnR '[inputs | select(length>0)]')"
 
 
   matrix_job:
@@ -83,7 +83,7 @@ jobs:
 
           cp ./tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
 
-          python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee /tmp/scenario_evaluation.log
+          python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee "${HOME}/armory/scenario_evaluation.log"
       # | tee "${SCENARIO_DIR}/scenario_evaluation.log"
       # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
 
