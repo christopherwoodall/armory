@@ -19,7 +19,7 @@ runs:
     - name: ⚙️ Installing Armory
       shell: bash
       run: |
-        pip install --no-compile --editable '.[developer]'
+        pip install --no-compile --editable '.[developer,engine,math,datasets,pytorch]'
         armory configure --use-defaults
 
     - name: 🐍 Load Cached Venv
