@@ -433,7 +433,6 @@ class Scenario:
         scenario_name = override_name if override_name else output["config"]["scenario"]["name"]
         filename = f"{scenario_name}_{output['timestamp']}.json"
 
-        _output_dir =.parent
         file_output = Path(f"{self.scenario_output_dir/{filename}")
         file_output.parent.mkdir(parents=True, exist_ok=True)
 
