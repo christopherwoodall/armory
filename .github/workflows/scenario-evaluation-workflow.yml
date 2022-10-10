@@ -81,7 +81,7 @@ jobs:
           mkdir -p "${HOME}/armory/outputs/"
           mkdir -p "${HOME}/.armory/"
 
-          cp ./github/workflows/tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
+          # cp ./github/workflows/tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
 
           pytest \
             -c pyproject.toml \
