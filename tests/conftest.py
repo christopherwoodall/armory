@@ -42,7 +42,6 @@ armory_test_parameters = (
         ("--github-ci"),
         dict(
             action="store_true",
-            default=False,
             help="Running in a GitHub CI environment",
         ),
     ),

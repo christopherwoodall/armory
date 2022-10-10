@@ -88,7 +88,7 @@ jobs:
             --verbose \
             -s ./tests/end_to_end/test_scenario_runner.py \
             --scenario-path ${{ matrix.scenario_path }} \
-            --github-ci | tee "/tmp/logs/${SCENARIO_PATH}_scenario_evaluation.log"
+            --github-ci | tee "/tmp/logs/${{ matrix.scenario_path }}_scenario_evaluation.log"
 
 
       - name: 📁 Archiving Artifacts
