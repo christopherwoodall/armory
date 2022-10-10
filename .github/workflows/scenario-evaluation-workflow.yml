@@ -50,6 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: matrix_generator
     strategy:
+      fail-fast: false
       matrix:
         scenario_path: ${{ fromJson(needs.matrix_generator.outputs.matrix) }}
         # scenario_path:
