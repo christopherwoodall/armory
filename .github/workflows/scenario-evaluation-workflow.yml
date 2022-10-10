@@ -70,7 +70,7 @@ jobs:
         timeout-minutes: 30
         env:
           ARMORY_INSTALL: "/tmp"
-          HOME: "/tmp"
+          # HOME: "/tmp"
         run: |
           SCENARIO_PATH=`echo ${{ matrix.scenario_path }} | awk '{gsub(/.*[/]|[.].*/, "", $0)} 1'`
           SCENARIO_DIR="/tmp/${SCENARIO_PATH}"
