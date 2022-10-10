@@ -73,18 +73,10 @@ jobs:
           ARMORY_INSTALL: "/tmp"
           # HOME: "/tmp"
         run: |
-          SCENARIO_PATH=`echo ${{ matrix.scenario_path }} | awk '{gsub(/.*[/]|[.].*/, "", $0)} 1'`
-          SCENARIO_DIR="/tmp/${SCENARIO_PATH}"
-
-          mkdir -p "${SCENARIO_DIR}"
           mkdir -p "/tmp/logs"
 
           mkdir -p "${HOME}/armory/outputs/"
           mkdir -p "${HOME}/.armory/"
-
-          # cp ./github/workflows/tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
-
-          sed -i "s|gpu|cpu|g" ${{ matrix.scenario_path }}
 
           pytest \
             -c pyproject.toml \
