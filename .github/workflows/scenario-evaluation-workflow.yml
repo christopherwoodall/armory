@@ -68,12 +68,11 @@ jobs:
 
       - name: 🚀 Run Scenario Evaluation
         timeout-minutes: 30
-        working-directory: .github/workflows/
         env:
           ARMORY_INSTALL: "/tmp"
           HOME: "/tmp"
         run: |
-          SCENARIO_PATH=`echo "${{ matrix.scenario_path }}" | awk '{gsub(/.*[/]|[.].*/, "", $0)} 1'`
+          SCENARIO_PATH=`echo ${{ matrix.scenario_path }} | awk '{gsub(/.*[/]|[.].*/, "", $0)} 1'`
           SCENARIO_DIR="/tmp/${SCENARIO_PATH}"
 
           mkdir -p "${SCENARIO_DIR}"
@@ -84,9 +83,13 @@ jobs:
 
           cp ./tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
 
-          python ./bin/scenario-evaluation-workflow.py run-scenario ${{ matrix.scenario_path }} 2>&1 | tee "/tmp/logs/${SCENARIO_PATH}_scenario_evaluation.log"
-      # | tee "${SCENARIO_DIR}/scenario_evaluation.log"
-      # pytest -c pyproject.toml --verbose --show-capture=no -s ./tests/end_to_end/test_scenario_runner.py
+          pytest \
+            -c pyproject.toml \
+            --verbose \
+            -s ./tests/end_to_end/test_scenario_runner.py \
+            --scenario-path ${{ matrix.scenario_path }} \
+            --github-ci | tee "/tmp/logs/${SCENARIO_PATH}_scenario_evaluation.log"
+
 
       - name: 📁 Archiving Artifacts
         uses: actions/upload-artifact@v3
@@ -97,6 +100,7 @@ jobs:
           retention-days: 1
           path: |
             /tmp/logs/
+            /tmp/results/
             /tmp/armory/outputs/
             /tmp/.armory/outputs/
 
