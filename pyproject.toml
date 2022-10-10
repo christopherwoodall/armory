@@ -93,7 +93,7 @@ pytorch = [
     "torch",
     "torchvision",
     "torchaudio",
-    "thop",
+    "ByteTrack @ git+https://github.com/ifzhang/ByteTrack.git",
 ]
 
 tensorflow = [
