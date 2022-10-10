@@ -30,12 +30,20 @@ armory_test_parameters = (
             required=False,
         ),
     ),
-        (
+    (
         ("--scenario-path"),
         dict(
             default="None",
             help="Set path to scenario config file",
             required=False,
+        ),
+    ),
+    (
+        ("--github-ci"),
+        dict(
+            action="store_true",
+            default=False,
+            help="Running in a GitHub CI environment",
         ),
     ),
 )
