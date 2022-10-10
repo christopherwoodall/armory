@@ -84,6 +84,8 @@ jobs:
 
           # cp ./github/workflows/tests/scenario-evaluation-config.json "${HOME}/.armory/config.json"
 
+          sed -i "s|gpu|cpu|g" ${{ matrix.scenario_path }}
+
           pytest \
             -c pyproject.toml \
             --verbose \
