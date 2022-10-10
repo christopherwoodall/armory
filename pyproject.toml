@@ -92,8 +92,7 @@ pytorch = [
     "armory-testbed[engine,datasets,math]",
     "torch",
     "torchvision",
-    "torchaudio",
-    "ByteTrack @ git+https://github.com/ifzhang/ByteTrack.git",
+    "torchaudio"
 ]
 
 tensorflow = [
