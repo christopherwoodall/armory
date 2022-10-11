@@ -14,11 +14,11 @@ runs:
     - name: 🌱 Setup Test Enviroment
       shell: bash
       run: |
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade pip3
 
-      # pip install virtualenv
-      # python -m pip install --upgrade build
-      # hatch --env armory --no-interactive --data-dir /tmp/artifacts --cache-dir /tmp/artifacts --python 3.9
+        pip install virtualenv
+        virtualenv .venv
+        source .venv/bin/activate
 
     - name: ⚙️ Installing Armory
       shell: bash
@@ -43,7 +43,8 @@ runs:
       id: cache
       uses: actions/cache@v3
       with:
-        path: ${{ env.pythonLocation }}
+        path: |
+          .venv/
         key: ${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
 
     # - name: ⚙️ Installing Armory

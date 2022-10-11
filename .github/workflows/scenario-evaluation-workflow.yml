@@ -63,9 +63,9 @@ jobs:
       - name: 🐍 Setup Environment
         uses:  ./.github/actions/evaluations_environment_setup
 
-      # - name: Install Prerequisites
-      #   run: |
-      #     source .venv/bin/activate
+      - name: Install Prerequisites
+        run: |
+          source .venv/bin/activate
 
       - name: 🚀 Run Scenario Evaluation
         timeout-minutes: 30
