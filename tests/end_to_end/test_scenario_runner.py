@@ -43,6 +43,8 @@ class TestScenarios(unittest.TestCase):
 
 
     def test_scenarios(self):
+        capsys = self.capsys
+
         trapped_in_ci = getattr(self, "github_ci", False)
         scenario_path = [Path(self.scenario_path)] if hasattr(self, "scenario_path") else []
         scenario_configs = Path("scenario_configs")
@@ -52,7 +54,7 @@ class TestScenarios(unittest.TestCase):
         # Setup Armory paths
         paths.set_mode("host")
 
-        with self.capsys.disabled():
+        with capsys.disabled():
 
             if not len(scenario_path):
                 scenario_path = [Path(f) for f in list(scenario_configs.glob("**/*.json")) if f.name not in block_list]
