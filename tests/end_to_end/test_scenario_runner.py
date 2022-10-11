@@ -60,7 +60,13 @@ class TestScenarios(unittest.TestCase):
 
             for scenario in scenario_path:
                 if scenario not in block_list:
-                    scenario_log_path, scenario_log_data = self.run_scenario(scenario)
+                    # scenario_log_path, scenario_log_data = self.run_scenario(scenario)
+                    armory_command = [scenario.as_posix(), "--check", "--no-gpu"]
+                    run(armory_command, "armory", None)
+                    out, err = capsys.readouterr()
+                    print(out)
+                    print(err)
+
 
                 # TODO:
                 # # Ensure the file exists.
@@ -74,12 +80,12 @@ class TestScenarios(unittest.TestCase):
                 #     # Simple object comparison.
                 #     assert (ordered(json.loads(Path(scenario_log_path).read_text())) == ordered(scenario_log_data)), "Scenario log data does not match."
 
-                    if trapped_in_ci:
-                        # TODO: Write output to sensible location
-                        results_path = Path('/tmp/results')
-                        ci_filename = f"{scenario.stem}-{scenario_log_path.stem}.json"
-                        results_path.mkdir(parents=True, exist_ok=True)
-                        Path(results_path / ci_filename).write_text(json.dumps(scenario_log_data))
+                # #     if trapped_in_ci:
+                # #         # TODO: Write output to sensible location
+                # #         results_path = Path('/tmp/results')
+                # #         ci_filename = f"{scenario.stem}-{scenario_log_path.stem}.json"
+                # #         results_path.mkdir(parents=True, exist_ok=True)
+                # #         Path(results_path / ci_filename).write_text(json.dumps(scenario_log_data))
 
 
     def run_scenario(self, scenario_path):
