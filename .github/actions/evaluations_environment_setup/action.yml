@@ -15,6 +15,17 @@ runs:
       shell: bash
       run: |
         python -m pip install --upgrade pip
+
+        pip install --no-cache-dir \
+          "git+https://github.com/ifzhang/ByteTrack.git" \
+          thop \
+          lap \
+          Cython
+
+        # Requires cython for install, so will fail if run in the same pip install as cython
+        pip install --no-cache-dir \
+          cython-bbox
+
       # pip install virtualenv
       # python -m pip install --upgrade build
       # hatch --env armory --no-interactive --data-dir /tmp/artifacts --cache-dir /tmp/artifacts --python 3.9
