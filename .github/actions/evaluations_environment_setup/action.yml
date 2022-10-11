@@ -19,16 +19,6 @@ runs:
       # python -m pip install --upgrade build
       # hatch --env armory --no-interactive --data-dir /tmp/artifacts --cache-dir /tmp/artifacts --python 3.9
 
-    - name: ⚙️ Install ByteTrack
-      shell: bash
-      run: |
-        pip install --no-cache-dir \
-          git+https://github.com/ifzhang/ByteTrack.git \
-          thop \
-          lap \
-          Cython \
-          cython-bbox
-
     - name: ⚙️ Installing Armory
       shell: bash
       run: |
