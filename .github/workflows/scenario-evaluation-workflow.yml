@@ -71,12 +71,14 @@ jobs:
         timeout-minutes: 30
         env:
           ARMORY_INSTALL: "/tmp"
-          # HOME: "/tmp"
+          HOME: "/tmp"
         run: |
           mkdir -p "/tmp/logs"
 
           mkdir -p "${HOME}/armory/outputs/"
           mkdir -p "${HOME}/.armory/"
+
+          armory configure --use-defaults
 
           pytest \
             -c pyproject.toml \
