@@ -19,7 +19,7 @@ from pathlib import Path
 
 from armory import paths
 
-# from armory.__main__ import run
+from armory.__main__ import run
 from armory.scenarios.main import get as get_scenario
 
 
