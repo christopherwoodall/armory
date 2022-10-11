@@ -61,7 +61,7 @@ class TestScenarios(unittest.TestCase):
             for scenario in scenario_path:
                 if scenario not in block_list:
                     # scenario_log_path, scenario_log_data = self.run_scenario(scenario)
-                    armory_command = [scenario.as_posix(), "--check", "--no-gpu"]
+                    armory_command = [scenario.as_posix(), "--no-docker", "--check", "--no-gpu"]
                     run(armory_command, "armory", None)
                     out, err = capsys.readouterr()
                     print(out)
