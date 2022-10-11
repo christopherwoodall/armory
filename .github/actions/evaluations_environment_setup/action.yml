@@ -29,7 +29,7 @@ runs:
     - name: ⚙️ Installing Dependencies
       shell: bash
       run: |
-        apt install -y protobuf-compiler
+        sudo apt install -y protobuf-compiler
 
         git clone https://github.com/ifzhang/ByteTrack.git
         cd ByteTrack
