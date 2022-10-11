@@ -2,15 +2,6 @@
 name: End-to-End Tests
 
 on:
-  push:
-    branches:
-      - master
-      - develop
-
-  pull_request:
-    branches:
-      - master
-      - develop
   schedule:
     - cron: 0 0 * * * # At Midnight Every Day
 
