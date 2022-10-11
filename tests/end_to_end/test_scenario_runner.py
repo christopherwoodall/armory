@@ -63,13 +63,17 @@ class TestScenarios(unittest.TestCase):
             for scenario in scenario_path:
 
                 if scenario not in block_list:
-                    # scenario_log_path, scenario_log_data = self.run_scenario(scenario)
-                    armory_flags = [scenario.as_posix(), "--no-docker", "--check", "--no-gpu"]
-                    run(armory_flags, "armory", None)
-                    out, err = capsys.readouterr()
-                    print(out)
-                    print(err)
-
+                    try:
+                        # scenario_log_path, scenario_log_data = self.run_scenario(scenario)
+                        armory_flags = [scenario.as_posix(), "--no-docker", "--check", "--no-gpu"]
+                        run(armory_flags, "armory", None)
+                        out, err = capsys.readouterr()
+                        print(out)
+                        print(err)
+                        return_code = 0
+                    except:
+                        return_code = 1
+        return return_code
 
                 # TODO:
                 # # Ensure the file exists.
