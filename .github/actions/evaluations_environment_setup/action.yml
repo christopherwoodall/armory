@@ -30,6 +30,7 @@ runs:
       shell: bash
       run: |
         sudo apt install -y protobuf-compiler
+        pip install --no-cache-dir cython
 
         git clone https://github.com/ifzhang/ByteTrack.git
         cd ByteTrack
