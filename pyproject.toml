@@ -115,6 +115,8 @@ deepspeech = [
 
 jupyter = [
     "jupyterlab",
+    "jupyterlab_widgets",
+    "ipywidgets",
 ]
 
 [build-system]
