@@ -33,7 +33,7 @@ dependencies:
 
   - pip:
     # Armory
-    - -e '.[developer,math,datasets-builder,jupyter,pytorch,deepspeech,tensorflow]'
+    - --editable '.[developer,math,datasets-builder,jupyter,pytorch,deepspeech,tensorflow]'
 
     # Hydra Lightning Configs
     - 'git+https://github.com/romesco/hydra-lightning.git#subdirectory=hydra-configs-pytorch-lightning'

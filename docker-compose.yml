@@ -28,4 +28,4 @@ services:
 
 
   # armory-launcher:  # Spawns containers using host daemon
-  # armory-database:  # Stores whitebox models
+  # armory-database:  # Stores training data for whitebox models and tar'd blackbox models
