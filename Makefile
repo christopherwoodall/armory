@@ -53,13 +53,14 @@ image: ## Build the docker image
 image: ## Build and tag the latest local version
 -	@echo "Building image..."
 - @echo "Tagging image as $(TAG)"
--	docker build --force-rm --compress --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+# -	docker build --force-rm --compress --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 - docker tag twosixarmory/$(IMAGE_NAME):$(TAG) twosixarmory/$(IMAGE_NAME):latest
 
 
 .PHONY: push
 push: ## Push the docker image
 -	@echo "Pushing image..."
+# TODO: Build make image latest first
 -	docker push twosixarmory/$(IMAGE_NAME):$(TAG)
 -	docker push twosixarmory/$(IMAGE_NAME):latest
 
