@@ -10,8 +10,8 @@ SHELL := /bin/bash
 .EXPORT_ALL_VARIABLES: ;   # Export variables to child processes.
 .DELETE_ON_ERROR:
 
-MAKEFLAGS += --warn-undefined-variables # DEBUGGING
-MAKEFLAGS += --no-builtin-rules         # DEBUGGING
+# MAKEFLAGS += --warn-undefined-variables # DEBUGGING
+# MAKEFLAGS += --no-builtin-rules         # DEBUGGING
 
 # Modify the block character to be `-\t` instead of `\t`
 ifeq ($(origin .RECIPEPREFIX), undefined)
