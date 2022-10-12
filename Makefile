@@ -1,14 +1,15 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-SHELL := /bin/bash
-.SHELLFLAGS := -eu -o pipefail -c
+SHELL         := /bin/bash
+.SHELLFLAGS   := -eu -o pipefail -c
+.DEFAULT_GOAL := run
 
 .ONESHELL:             ;   # Recipes execute in same shell
 .NOTPARALLEL:          ;   # Wait for this target to finish
 .SILENT:               ; 	 # No need for @
 .EXPORT_ALL_VARIABLES: ;   # Export variables to child processes.
-.DELETE_ON_ERROR:
+.DELETE_ON_ERROR:      ;   # Delete target if recipe fails.
 
 # MAKEFLAGS += --warn-undefined-variables # DEBUGGING
 # MAKEFLAGS += --no-builtin-rules         # DEBUGGING
@@ -19,7 +20,12 @@ ifeq ($(origin .RECIPEPREFIX), undefined)
 endif
 .RECIPEPREFIX = -
 
-.DEFAULT_GOAL := run
+ifeq ($(OS),Windows_NT)
+SHELL := powershell.exe
+.SHELLFLAGS := -NoProfile -Command
+.DEFAULT_GOAL := windows
+endif
+
 
 default: $(.DEFAULT_GOAL)
 all: help
@@ -38,7 +44,9 @@ help: ## List commands
 .PHONY: venv
 venv:	## Setup a Virtual Environment
 -	echo -e "\033[36mSetting up virtual environment...\033[0m"
-
+- python -m pip install --upgrade pip
+- pip install -e '.[developer]'
+- hatch env create armory-venv
 
 
 .PHONY: image
@@ -72,19 +80,18 @@ compose: ## Run docker-compose
 -	docker-compose up --remove-orphans --build armory-$(IMAGE_NAME)
 
 
-.PHONY: lint
-lint: ## Lint the code
--	echo -e "\033[36mLinting the code...\033[0m"
-- ./tools/pre-commit.sh
-
-
-## Developer Notes
+##
 # WIP: Windows support
 #   For Windows users, you can use the following command to run this Makefile:
 #     $ choco install make
 #     $ make -f Makefile
-#		>>>
-#		>>> ifeq ($(OS),Windows_NT)
-#		>>> SHELL := powershell.exe
-#		>>> .SHELLFLAGS := -NoProfile -Command
-#		>>> endif
+.PHONY: windows
+windows: ## WIP: Windows
+-	echo "Work in Progress..."
+-	echo "Check back soon!"
+
+
+.PHONY: lint
+lint: ## Lint the code
+-	echo -e "\033[36mLinting the code...\033[0m"
+- ./tools/pre-commit.sh
