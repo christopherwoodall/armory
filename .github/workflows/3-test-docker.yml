@@ -6,7 +6,6 @@ on: workflow_call
 env:
   DOCKER_BUILDKIT: 1
 
-# TODO: Add independent job that builds the images.
 jobs:
   docker-torch-unit:
     name: ☁️ Docker Fortress Image Tests
@@ -35,7 +34,7 @@ jobs:
 
       # TODO: Create/mount a volume with the tests and config files.
       # yamllint disable rule:indentation
-      - name: 🤞 Run Image tests
+      - name: 📐 Run Unit Tests
         run: |
           IMAGE_VERSION=`armory --show-docker-version-tag`
           docker run                                  \
@@ -46,13 +45,16 @@ jobs:
                 -c /armory-repo/pyproject.toml        \
                 -m "not docker_required and unit"     \
                 ./tests/
-      # yamllint enable rule:indentation
 
-# docker run                                         \
-# --rm                                               \
-# --workdir /armory-repo                             \
-# twosixarmory/pytorch-deepspeech:${IMAGE_VERSION}  \
-#   pytest                                           \
-#     -c /armory-repo/pyproject.toml                 \
-#     -m "pytorch_deepspeech"                        \
-#     ./tests/
+      - name: 📢 Run Deep Speech Tests
+        run: |
+          IMAGE_VERSION=`armory --show-docker-version-tag`
+          docker run                              \
+          --rm                                    \
+          --workdir /armory-repo                  \
+          twosixarmory/fortress:${IMAGE_VERSION}  \
+            pytest                                \
+              -c /armory-repo/pyproject.toml      \
+              -m "pytorch_deepspeech"             \
+              ./tests/
+      # yamllint enable rule:indentation
