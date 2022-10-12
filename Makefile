@@ -44,14 +44,16 @@ run:	## Run the application
 image: ## Build the docker image
 -	@echo "Building image..."
 - @echo "Tagging image as $(TAG)"
--	docker build --force-rm --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+-	docker build --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
+- docker build --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --file ./docker/Dockerfile .
+- docker build --cache-from twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 
 
 .PHONY: latest
 image: ## Build and tag the latest local version
 -	@echo "Building image..."
 - @echo "Tagging image as $(TAG)"
--	docker build --force-rm --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+-	docker build --force-rm --compress --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 - docker tag twosixarmory/$(IMAGE_NAME):$(TAG) twosixarmory/$(IMAGE_NAME):latest
 
 
