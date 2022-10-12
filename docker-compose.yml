@@ -13,6 +13,9 @@ services:
      context: .
      dockerfile: ./docker/Dockerfile-base
 
+    ports:
+      - 8888:8888
+
     volumes:
       - ./environment.yml:/app/environment.yml
       - ./data:/tmp/
