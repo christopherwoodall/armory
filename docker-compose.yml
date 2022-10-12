@@ -7,7 +7,7 @@ version: "3"
 services:
   armory-fortress:
     container_name: armory
-    image: local/fortress:latest
+    image: twosixarmory/fortress:latest
 
     build:
      context: .
