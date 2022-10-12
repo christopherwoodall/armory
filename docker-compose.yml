@@ -13,6 +13,8 @@ services:
      context: .
      dockerfile: ./docker/Dockerfile-base
 
+    # command: ['ipython']
+
     ports:
       - 8888:8888
 
