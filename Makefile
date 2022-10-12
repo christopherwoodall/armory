@@ -27,6 +27,7 @@ all: help
 TAG = $(shell armory --version 2> /dev/null | sed -r 's/\+/\./g')
 IMAGE_NAME = fortress
 
+
 .PHONY: help
 help: ## List commands
 -	@echo -e "USAGE: make \033[36m[COMMAND]\033[0m\n"
@@ -65,6 +66,12 @@ push: ## Push the docker image
 compose: ## Run docker-compose
 -	@echo "Running docker-compose..."
 -	docker-compose up --remove-orphans --build armory-$(IMAGE_NAME)
+
+
+.PHONY: lint
+lint: ## Lint the code
+-	@echo "Linting the code..."
+- ./tools/pre-commit.sh
 
 
 ## Developer Notes
