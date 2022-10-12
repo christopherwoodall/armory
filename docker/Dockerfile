@@ -6,15 +6,6 @@
 # based images should inhereit from this image using:
 #       FROM twosixlabs/armory-baseline AS armory-baseline
 #
-# Conda/Mamba commands
-#   - Search through the revision history of an environment.
-#     $ mamba list --name base --revisions
-#   - Search for an available package, the command is slightly different in mamba.
-#     $ mamba repoquery search <package>
-#     $ mamba repoquery depends -a <package>
-#   - Export an environment to a YAML file.
-#     $ mamba env export --name base > environment.yml
-#
 ##########################################################################################
 
 FROM nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
@@ -75,11 +66,11 @@ RUN mamba env update --name base --file /app/environment.yml --prune && \
     mamba clean --all --yes
 
 
-# RUN (jupyter-kernel --ip=0.0.0.0 --port=8888 --KernelManager.shell_port=56409 --no-browser --allow-root) &
-# CMD ["jupyter-kernel", "--ip=0.0.0.0", "--port=8888", "--KernelManager.shell_port=56409", "--no-browser", "--allow-root"]
+RUN armory configure --use-default && \
+    rm -rf /tmp/pip-cache
 
 
-# Useful for updating pinned packaged
+# Useful for updating pinned packages
 # RUN mamba update --name base --all && \
 #     mamba clean --all --yes && \
 #     conda env export --no-builds > environment.yml
@@ -91,3 +82,34 @@ VOLUME /tmp
 # PORT 8888
 
 # WORKDIR /workspace
+
+
+# ------------------------------------------------------------------
+# DEVELOPER NOTES:
+# ------------------------------------------------------------------
+# TODO: determine if this environment setup is needed
+#  $ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/cuda/lib64"
+#
+# NOTE: Conda/Mamba commands
+#   - Search through the revision history of an environment.
+#     $ mamba list --name base --revisions
+#   - Search for an available package, the command is slightly different in mamba.
+#     $ mamba repoquery search <package>
+#     $ mamba repoquery depends -a <package>
+#   - Export an environment to a YAML file.
+#     $ mamba env export --name base > environment.yml
+#
+# NOTE:
+#  - pytorch-lightning >= 1.5.0 will break Deep Speech 2
+#  - torchmetrics >= 0.8.0 will break pytorch-lightning 1.4
+#  - hydra-lightning installs omegaconf
+#  - google-cloud-storage needed for checkpoint.py import
+#  - only sox python bindings are installed; underlying sox binaries not needed
+#
+# NOTE: Listed dependencies of PyTorch Deep Speech 2, but do not appear
+#       to be used for inference (only for training), they are not installed:
+#         - torchelastic
+#         - wget
+#         - flask
+#         - fairscale
+# ------------------------------------------------------------------

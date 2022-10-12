@@ -11,7 +11,7 @@ services:
 
     build:
      context: .
-     dockerfile: ./docker/Dockerfile-base
+     dockerfile: ./docker/Dockerfile
 
     # command: ['ipython']
 
