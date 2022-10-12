@@ -27,7 +27,7 @@ dependencies:
 
   # ByteTrack (see below)
   # TODO: Should this be added to pyproject.toml; e.g. [byte-track]?
-  - pytorch=1.12   # Required by ByteTrack, therefore must be installed before armory
+  - pytorch=1.12   # Required by ByteTrack, therefore must be installed pre-pip
   - Cython         # ByteTrack
   - lap            # ByteTrack
 
