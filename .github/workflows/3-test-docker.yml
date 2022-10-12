@@ -39,10 +39,10 @@ jobs:
           IMAGE_VERSION=`armory --show-docker-version-tag`
           docker run                                  \
             --rm                                      \
-            --workdir /armory-repo                    \
+            --workdir /app                            \
             twosixarmory/fortress:${IMAGE_VERSION}    \
               pytest                                  \
-                -c /armory-repo/pyproject.toml        \
+                -c /app/pyproject.toml                \
                 -m "not docker_required and unit"     \
                 ./tests/
 
@@ -51,10 +51,10 @@ jobs:
           IMAGE_VERSION=`armory --show-docker-version-tag`
           docker run                              \
           --rm                                    \
-          --workdir /armory-repo                  \
+          --workdir /app                          \
           twosixarmory/fortress:${IMAGE_VERSION}  \
             pytest                                \
-              -c /armory-repo/pyproject.toml      \
+              -c /app/pyproject.toml              \
               -m "pytorch_deepspeech"             \
               ./tests/
       # yamllint enable rule:indentation
