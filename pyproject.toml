@@ -61,13 +61,13 @@ developer =[
 ]
 
 engine = [
-    "adversarial-robustness-toolbox==1.12.1",
-    "Pillow",           # Data dependencies
+    "adversarial-robustness-toolbox[all]==1.12.1",
+    "Pillow",         # Data dependencies
     "boto3",          # Needed for armory.data.utils
     "botocore",       # Needed for armory.data.utils
-    "ffmpeg-python",    # Needed for armory.utils.export
+    "ffmpeg-python",  # Needed for armory.utils.export
     "opencv-python",  # Needed for CARLA baseline scenario
-    "pydub",           # this is in ART's extra-requires
+    "pydub",          # this is in ART's extra-requires
     "tensorboardx",
 ]
 
@@ -84,6 +84,7 @@ datasets-builder = [
 
 math = [
     "numpy",
+    "pandas",
     "scipy",
     "scikit-learn < 1.1.0",
     "matplotlib",
