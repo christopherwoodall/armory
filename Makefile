@@ -44,9 +44,9 @@ run:	## Run the application
 image: ## Build the docker image
 -	@echo "Building image..."
 - @echo "Tagging image as $(TAG)"
--	docker build --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
-- docker build --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --file ./docker/Dockerfile .
-- docker build --cache-from twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+-	docker build --target base --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
+- docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --file ./docker/Dockerfile .
+- docker build --target release --cache-from twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 
 
 .PHONY: latest

@@ -39,6 +39,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Basic Apt-get Bits
 RUN apt-get -y -qq update                                                        && \
+    apt-get -qq -y upgrade                                                       && \
     apt-get install -y                                                              \
         wget                                                                        \
         vim                                                                         \
@@ -46,10 +47,11 @@ RUN apt-get -y -qq update                                                       
         curl                                                                        \
         # libgl1-mesa-glx is needed for cv2 (opencv-python)
         libgl1-mesa-glx                                                          && \
+    apt-get -y autoclean                                                         && \
+    apt-get -y autoremove                                                        && \
     rm -rf /var/lib/apt/lists/*                                                  && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone   && \
     ldconfig
-
 
 # Install Conda
 # NOTE: with conda version 5, will need to set channel priority to flexible (as strict will become default)
@@ -61,7 +63,14 @@ RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-L
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh     && \
     conda init bash
 
+# Create a user
+RUN useradd -m ${USER} && \
+    cp /root/.bashrc /home/${USER}/ && \
+    mkdir -p /workspace && \
+    chown -R --from=root ${USER} {/app,/workspace,/home/$USER}
 
+
+FROM base as staging
 RUN mamba env update --name base --file /app/environment.yml --prune && \
     mamba clean --all --yes
 
@@ -77,14 +86,18 @@ RUN armory configure --use-default && \
 #     conda env export --no-builds > environment.yml
 
 
-FROM base as fortress
+FROM staging as release
 
-VOLUME /tmp
+USER armory
+
+ENV HOME /workspace
+
+VOLUME ["/workspace", "/app", "/tmp", "/home/armory"]
 
 # Jupyter
-# PORT 8888
+PORT 8888
 
-# WORKDIR /workspace
+WORKDIR /workspace
 
 
 # ------------------------------------------------------------------
