@@ -8,7 +8,7 @@
 #
 ##########################################################################################
 
-FROM nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
+FROM nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04 as base
 
 # set pip's cache directory using this environment variable, and use
 # ARG instead of ENV to ensure its only set when the image is built
@@ -70,11 +70,14 @@ RUN armory configure --use-default && \
     rm -rf /tmp/pip-cache
 
 
+# FROM base as dev
 # Useful for updating pinned packages
 # RUN mamba update --name base --all && \
 #     mamba clean --all --yes && \
 #     conda env export --no-builds > environment.yml
 
+
+FROM base as fortress
 
 VOLUME /tmp
 
