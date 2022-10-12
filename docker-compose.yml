@@ -7,21 +7,20 @@ version: "3"
 services:
   armory-fortress:
     container_name: armory
-    image: armory:latest
+    image: local/fortress:latest
 
     build:
      context: .
      dockerfile: ./docker/Dockerfile
 
-    # command: ['ipython']
+    command: ['ipython']
 
     ports:
       - 8888:8888
 
     volumes:
       - ./environment.yml:/app/environment.yml
-      - ./data:/tmp/
-      # - ./data:/workspace/data
+      - ./data:/workspace/
 
     stdin_open: true
     tty: true
