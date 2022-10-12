@@ -53,9 +53,6 @@ jobs:
       fail-fast: false
       matrix:
         scenario_path: ${{ fromJson(needs.matrix_generator.outputs.matrix) }}
-        # scenario_path:
-        #   - scenario_configs/cifar10_baseline.json
-        #   - scenario_configs/mnist_baseline.json
     steps:
       - name: 🐄 Got git?
         uses: actions/checkout@v3
@@ -85,7 +82,7 @@ jobs:
             --verbose \
             -s ./tests/end_to_end/test_scenario_runner.py \
             --scenario-path ${{ matrix.scenario_path }} \
-            --github-ci | tee "/tmp/logs/${{ matrix.scenario_path }}_scenario_evaluation.log"
+            --github-ci | tee "scenario_evaluation.log"
 
 
       - name: 📁 Archiving Artifacts
@@ -100,18 +97,3 @@ jobs:
             /tmp/results/
             /tmp/armory/outputs/
             /tmp/.armory/outputs/
-
-
-  # debugger:
-  #   name: Debugger
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: 📝 Echo Environs
-  #       shell: python
-  #       run: |
-  #         print(__import__(os).environ)
-  #     # Enable tmate debugging of manually-triggered workflows if the input option was provided
-  #     - name: Setup tmate session
-  #       uses: mxschmitt/action-tmate@v3
-  #       timeout-minutes: 5
-  #       if: ${{ failure() && github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}

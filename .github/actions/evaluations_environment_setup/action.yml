@@ -23,7 +23,7 @@ runs:
     - name: ⚙️ Installing Armory
       shell: bash
       run: |
-        pip install --no-compile --editable '.[developer,engine,math,datasets,pytorch]'
+        pip install --no-compile --editable '.[developer,engine,math,datasets,pytorch,datasets-builder]'
         armory configure --use-defaults
 
     - name: ⚙️ Installing Dependencies
