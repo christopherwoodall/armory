@@ -44,9 +44,25 @@ help: ## List commands
 .PHONY: venv
 venv:	## Setup a Virtual Environment
 -	echo -e "\033[36mSetting up virtual environment...\033[0m"
+- rm -rf venv
+- python -m pip install --upgrade virtualenv
+- python -m virtualenv venv
+- source venv/bin/activate
 - python -m pip install --upgrade pip
 - pip install -e '.[developer]'
-- hatch env create armory-venv
+
+
+.PHONY: ipython
+ipython:	## Setup a Virtual Environment
+-	echo -e "\033[36mSetting up virtual environment...\033[0m"
+- rm -rf venv
+- python -m pip install --upgrade virtualenv
+- python -m virtualenv venv
+- source venv/bin/activate
+- python -m pip install --upgrade pip
+- pip install ipykernel
+- pip install -e '.[developer]'
+- ipykernel
 
 
 .PHONY: image
