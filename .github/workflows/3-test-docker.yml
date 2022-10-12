@@ -1,7 +1,9 @@
 ---
 name: 🤖 Docker Tests
 
-on: workflow_call
+on:
+  workflow_call:
+  workflow_dispatch:
 
 env:
   DOCKER_BUILDKIT: 1
