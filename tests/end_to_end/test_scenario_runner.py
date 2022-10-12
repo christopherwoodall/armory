@@ -33,7 +33,6 @@ block_list = [
 ]
 
 
-
 @pytest.mark.usefixtures("pass_parameters")
 class TestScenarios(unittest.TestCase):
 
@@ -59,7 +58,6 @@ class TestScenarios(unittest.TestCase):
             if not len(scenario_path):
                 scenario_path = [Path(f) for f in list(scenario_configs.glob("**/*.json")) if f.name not in block_list]
 
-
             for scenario in scenario_path:
 
                 if scenario not in block_list:
@@ -68,31 +66,11 @@ class TestScenarios(unittest.TestCase):
                         armory_flags = [scenario.as_posix(), "--no-docker", "--check", "--no-gpu"]
                         run(armory_flags, "armory", None)
                         out, err = capsys.readouterr()
-                        print(out)
-                        print(err)
-                        return_code = 0
                     except:
-                        return_code = 1
-        return return_code
+                        assert False, f"Failed to run scenario: {scenario}"
 
-                # TODO:
-                # # Ensure the file exists.
-                # assert scenario_log_path.exists(), f"Missing result file: {scenario_log_path}"
-
-                # # Ensure the file is not empty.
-                # assert scenario_log_path.stat().st_size > 0, f"Empty result file: {scenario_log_path}"
-
-                # # Check that the results were written.
-                # with capsys.disabled():
-                #     # Simple object comparison.
-                #     assert (ordered(json.loads(Path(scenario_log_path).read_text())) == ordered(scenario_log_data)), "Scenario log data does not match."
-
-                # #     if trapped_in_ci:
-                # #         # TODO: Write output to sensible location
-                # #         results_path = Path('/tmp/results')
-                # #         ci_filename = f"{scenario.stem}-{scenario_log_path.stem}.json"
-                # #         results_path.mkdir(parents=True, exist_ok=True)
-                # #         Path(results_path / ci_filename).write_text(json.dumps(scenario_log_data))
+                    if trapped_in_ci:
+                        Path(f"/tmp/.armory/{scenario.name}.log").write_text("\n\n".join([out, err]))
 
 
     def run_scenario(self, scenario_path):
