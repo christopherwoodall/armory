@@ -95,7 +95,7 @@ ENV HOME /workspace
 VOLUME ["/workspace", "/app", "/tmp", "/home/armory"]
 
 # Jupyter
-PORT 8888
+EXPOSE 8888
 
 WORKDIR /workspace
 
