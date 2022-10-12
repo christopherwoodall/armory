@@ -61,7 +61,7 @@ developer =[
 ]
 
 engine = [
-    "adversarial-robustness-toolbox[all]==1.12.1",
+    "adversarial-robustness-toolbox==1.12.1",
     "Pillow",              # Data dependencies
     "boto3==1.24.89",      # Needed for armory.data.utils
     "botocore==1.27.89" ,  # Needed for armory.data.utils
@@ -119,6 +119,19 @@ jupyter = [
     "ipywidgets",
 ]
 
+all = [
+    "armory-testbed[developer]",
+    "armory-testbed[engine]",
+    "armory-testbed[math]",
+    "armory-testbed[jupyter]",
+    "armory-testbed[datasets]",
+    "armory-testbed[datasets-builder]",
+    "armory-testbed[pytorch]",
+    "armory-testbed[tensorflow]",
+    "armory-testbed[deepspeech]",
+    # "adversarial-robustness-toolbox[all]==1.12.1",
+]
+
 
 [build-system]
 build-backend = "hatchling.build"
@@ -163,10 +176,12 @@ allow-direct-references = true
 
 
 # Environments
-[tool.hatch.envs.make]
+[tool.hatch.envs.armory-venv]
+python      = "3.8"
+description = "Virtual Enviroment for Armory (see Makefile)"
 dependencies = [
   "armory-testbed[developer]",
-  "armory-testbed[engine]",
+  # "armory-testbed[engine]",
   # "armory-testbed[datasets]",
   # "armory-testbed[datasets-builder]",
   # "armory-testbed[math]",
