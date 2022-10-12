@@ -6,77 +6,88 @@
 # based images should inhereit from this image using:
 #       FROM twosixlabs/armory-baseline AS armory-baseline
 #
+# Conda/Mamba commands
+#   - Search through the revision history of an environment.
+#     $ mamba list --name base --revisions
+#   - Search for an available package, the command is slightly different in mamba.
+#     $ mamba repoquery search <package>
+#     $ mamba repoquery depends -a <package>
+#   - Export an environment to a YAML file.
+#     $ mamba env export --name base > environment.yml
+#
 ##########################################################################################
 
 FROM nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
 
-# Temporary fix for broken nvidia package checksum
-# RUN rm -f /etc/apt/sources.list.d/nvidia-ml.list
+# set pip's cache directory using this environment variable, and use
+# ARG instead of ENV to ensure its only set when the image is built
+ARG PIP_CACHE_DIR="/tmp/pip-cache"   \
+    USER="armory"                    \
+    PASSWORD="armory"
+
+ENV PYTHON_VERSION="3.9"               \
+    CONDA_DIR="/opt/conda"             \
+    TZ="UTC"                           \
+    PATH="/opt/conda/bin:$PATH"
+
+# # TensorFlow requirement
+# ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/lib/
+
+COPY ./ /app/
+
+WORKDIR /app
+
+USER root
+
+SHELL ["/bin/bash", "-c"]
+
+
+# Replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 
 # Basic Apt-get Bits
-RUN apt-get -y -qq update && \
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-    wget \
-    vim \
-    build-essential \
-    git \
-    curl \
-    libgl1-mesa-glx \
-#    libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-# libgl1-mesa-glx is needed for cv2 (opencv-python)
+RUN apt-get -y -qq update                                                        && \
+    apt-get install -y                                                              \
+        wget                                                                        \
+        vim                                                                         \
+        build-essential                                                             \
+        curl                                                                        \
+        # libgl1-mesa-glx is needed for cv2 (opencv-python)
+        libgl1-mesa-glx                                                          && \
+    rm -rf /var/lib/apt/lists/*                                                  && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone   && \
+    ldconfig
+
 
 # Install Conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
-    rm ~/miniconda.sh && \
-    /opt/conda/bin/conda clean -tipsy && \
-    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
-#    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-#    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-#    echo "conda activate base" >> ~/.bashrc && \
-#    echo 'alias ll="ls -al"' >> ~/.bashrc
-
-ENV PATH=/opt/conda/bin:$PATH
-
-# TensorFlow requirement
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/lib/
-
-# NOTE: using mamba because conda fails when trying to solve for environment
-RUN conda install -c conda-forge -n base mamba \
-    && conda clean --all
-
-WORKDIR /armory-repo/
-COPY environment.yml /armory-repo/
-
-RUN mamba env update -f environment.yml -n base --prune \
-    && mamba clean --all
-
-#RUN /opt/conda/bin/conda env update -f environment.yml --prune \
-#    && /opt/conda/bin/conda clean --all
 # NOTE: with conda version 5, will need to set channel priority to flexible (as strict will become default)
+RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    /bin/bash miniconda.sh -b -p /opt/conda                             && \
+    rm miniconda.sh                                                     && \
+    conda install --yes --channel conda-forge --name base nomkl mamba   && \
+    conda config --set auto_activate_base true                          && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh     && \
+    conda init bash
 
-# NOTE: Armory requirements and ART requirements are installed here to make patch updates fast and small
-RUN echo "Installing TensorFlow and ART/Armory requirements via pip"
-RUN /opt/conda/bin/pip install --no-cache-dir \
-    tensorflow-datasets==4.6 \
-    tensorflow==2.10 \
-    tensorboardx \
-    boto3 \
-    opencv-python \
-    ffmpeg-python \
-    pytest \
-    loguru \
-    docker \
-    jsonschema \
-    requests \
-    pydub \
-    transformers \
-    six \
-    setuptools \
-    tqdm
-# transformers is used for the Entailment metric only
-# pydub required for ART mp3 defense
 
-WORKDIR /workspace
+RUN mamba env update --name base --file /app/environment.yml --prune && \
+    mamba clean --all --yes
+
+
+# RUN (jupyter-kernel --ip=0.0.0.0 --port=8888 --KernelManager.shell_port=56409 --no-browser --allow-root) &
+# CMD ["jupyter-kernel", "--ip=0.0.0.0", "--port=8888", "--KernelManager.shell_port=56409", "--no-browser", "--allow-root"]
+
+
+# Useful for updating pinned packaged
+# RUN mamba update --name base --all && \
+#     mamba clean --all --yes && \
+#     conda env export --no-builds > environment.yml
+
+
+VOLUME /tmp
+
+# Jupyter
+# PORT 8888
+
+# WORKDIR /workspace
