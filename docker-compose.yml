@@ -1,0 +1,26 @@
+---
+# docker-compose --file docker-compose.yml up -d --build armory
+# docker-compose exec armory /bin/bash
+
+version: "3"
+
+services:
+  armory:
+    container_name: armory
+    image: armory:latest
+
+    build:
+     context: .
+     dockerfile: ./docker/Dockerfile-base
+
+    volumes:
+      - ./environment.yml:/app/environment.yml
+      - ./data:/tmp/
+      # - ./data:/workspace/data
+
+    stdin_open: true
+    tty: true
+
+
+  # armory-launcher:  # Spawns containers using host daemon
+  # armory-database:  # Stores whitebox models
