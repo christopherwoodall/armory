@@ -119,15 +119,13 @@ jupyter = [
     "ipywidgets",
 ]
 
+
 [build-system]
 build-backend = "hatchling.build"
 requires = [
   "hatchling>=1.10.0",
   "hatch-vcs",
 ]
-
-[tool.setuptools_scm]
-# the presence of this empty block stops setuptools_scm from complaining
 
 [tool.hatch.version]
 source = "vcs"
@@ -164,7 +162,25 @@ exclude = [
 allow-direct-references = true
 
 
+# Environments
+[tool.hatch.envs.make]
+dependencies = [
+  "armory-testbed[developer]",
+  "armory-testbed[engine]",
+  # "armory-testbed[datasets]",
+  # "armory-testbed[datasets-builder]",
+  # "armory-testbed[math]",
+  # "armory-testbed[pytorch]",
+  # "armory-testbed[tensorflow]",
+  # "armory-testbed[deepspeech]",
+  # "armory-testbed[jupyter]",
+]
+
+
 # Tools
+[tool.setuptools_scm]
+# the presence of this empty block stops setuptools_scm from complaining
+
 [tool.bandit]
 recursive = true
 targets = [ "armory" ]

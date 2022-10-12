@@ -35,31 +35,32 @@ help: ## List commands
 -	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\t\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 
-.PHONY: run
-run:	## Run the application
--	@echo "Running..."
+.PHONY: venv
+venv:	## Setup a Virtual Environment
+-	echo -e "\033[36mSetting up virtual environment...\033[0m"
+
 
 
 .PHONY: image
 image: ## Build the docker image
--	@echo "Building image..."
-- @echo "Tagging image as $(TAG)"
+-	echo -e "\033[36mBuilding image...\033[0m"
+-	echo -e "\033[36mTagging image as $(TAG)\033[0m"
 -	docker build --target base --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
 - docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --file ./docker/Dockerfile .
 - docker build --target release --cache-from twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 
 
 .PHONY: latest
-image: ## Build and tag the latest local version
--	@echo "Building image..."
-- @echo "Tagging image as $(TAG)"
+latest: ## Tag local version as latest
+# -	echo -e "\033[36mBuilding image..."
+- echo -e "\033[36mTagging image as $(TAG)\033[0m"
 # -	docker build --force-rm --compress --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 - docker tag twosixarmory/$(IMAGE_NAME):$(TAG) twosixarmory/$(IMAGE_NAME):latest
 
 
 .PHONY: push
 push: ## Push the docker image
--	@echo "Pushing image..."
+-	echo -e "\033[36mPushing image...\033[0m"
 # TODO: Build make image latest first
 -	docker push twosixarmory/$(IMAGE_NAME):$(TAG)
 -	docker push twosixarmory/$(IMAGE_NAME):latest
@@ -67,13 +68,13 @@ push: ## Push the docker image
 
 .PHONY: compose
 compose: ## Run docker-compose
--	@echo "Running docker-compose..."
+-	echo -e "\033[36mRunning docker-compose...\033[0m"
 -	docker-compose up --remove-orphans --build armory-$(IMAGE_NAME)
 
 
 .PHONY: lint
 lint: ## Lint the code
--	@echo "Linting the code..."
+-	echo -e "\033[36mLinting the code...\033[0m"
 - ./tools/pre-commit.sh
 
 
