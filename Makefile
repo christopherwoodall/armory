@@ -54,8 +54,9 @@ image: ## Build the docker image
 -	echo -e "\033[36mBuilding image...\033[0m"
 -	echo -e "\033[36mTagging image as $(TAG)\033[0m"
 -	docker build --target base --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
-- docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --file ./docker/Dockerfile .
-- docker build --target release --cache-from twosixarmory/$(IMAGE_NAME)-armory:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+- docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --file ./docker/Dockerfile .
+- docker build --target pre-release --cache-from twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --file ./docker/Dockerfile .
+- docker build --target release --cache-from twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 
 
 .PHONY: latest
