@@ -53,7 +53,7 @@ venv:	## Setup a Virtual Environment
 
 
 .PHONY: ipython
-ipython:	## Setup a Virtual Environment
+ipython:	## Setup an iPython Virtual Environment
 -	echo -e "\033[36mSetting up virtual environment...\033[0m"
 - rm -rf venv
 - python -m pip install --upgrade virtualenv
