@@ -5,8 +5,6 @@ on:
   workflow_call:
   workflow_dispatch:
 
-env:
-  DOCKER_BUILDKIT: 1
 
 jobs:
   docker-torch-unit:
