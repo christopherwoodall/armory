@@ -31,8 +31,9 @@ class ImageMapper:
   def resolve(cls, image_name):
       instance = getattr(cls, hex(id(cls)), super(ImageMapper, cls).__new__(cls))
       repo, image, tag = instance.sanitize_image_name(image_name)
-      return instance.find_image(repo, image, tag)
-
+      docker_image = instance.find_image(repo, image, tag)
+      log.info(f"Launching image: {docker_image}")
+      return docker_image
 
   def sanitize_image_name(self, image_name):
       """
@@ -49,31 +50,31 @@ class ImageMapper:
 
   def find_image(self, repo, image, tag):
     # TODO: Token/Tag resolution could be better...
-      if int(tag[2:4]) > 16:
-          image = self.image
-      tokens = tag.split(".")
-      keys = [key for key in self.images.keys() if self.repo in key and image in key]
-      if not keys:
-        raise ValueError("Image not found")
-      for key in keys:
-        local_tag = key.split(":")[1]
-        local_tokens = local_tag.split(".")
-        if tokens == local_tokens:
-          print("Found Exact match")
-          break
-        elif tokens[:2] == local_tokens[:2]:
-          print("Found release version")
-          break
-        elif [tokens[0], int(tokens[1]) - 1, tokens[2]] == local_tokens:
-          print("found older version")
-          # log.info(f"reverting to previous release tag image {prev_release}")
-          break
-        elif local_tag == "latest":
-          break
-        key = False
-      if not key:
-          key = self.pull_image(f"{repo}/{image}:latest")
-      return key
+    if int(tag[2:4]) > 16:
+        image = self.image
+    tokens = tag.split(".")
+    keys = [key for key in self.images.keys() if self.repo in key and image in key]
+    if not keys:
+      raise ValueError("Image not found")
+    for key in keys:
+      local_tag = key.split(":")[1]
+      local_tokens = local_tag.split(".")
+      if tokens == local_tokens:
+        print("Found Exact match")
+        break
+      elif tokens[:2] == local_tokens[:2]:
+        print("Found release version")
+        break
+      elif [tokens[0], int(tokens[1]) - 1, tokens[2]] == local_tokens:
+        print("found older version")
+        # log.info(f"reverting to previous release tag image {prev_release}")
+        break
+      elif local_tag == "latest":
+        break
+      key = False
+    if not key:
+        key = self.pull_image(f"{repo}/{image}:latest")
+    return key
 
 
   def pull_image(self, image):
