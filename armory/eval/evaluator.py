@@ -13,7 +13,6 @@ import requests
 
 import armory
 from armory.configuration import load_global_config
-from armory.docker import images
 from armory.docker.management import ManagementInstance, ArmoryInstance
 from armory.docker.host_management import HostManagementInstance
 from armory.utils.printing import bold, red
@@ -72,7 +71,7 @@ class Evaluator(object):
             kwargs["image_name"] = None
             self.manager = HostManagementInstance()
         else:
-            kwargs["image_name"] = images.ensure_image_present(image_name)
+            kwargs["image_name"] = image_name
             self.manager = ManagementInstance(**kwargs)
 
     def _gather_env_variables(self):
@@ -113,7 +112,7 @@ class Evaluator(object):
             torch_home = paths.DockerPaths().pytorch_dir
         self.extra_env_vars["TORCH_HOME"] = torch_home
 
-        self.extra_env_vars[environment.ARMORY_VERSION] = armory.__version__
+        # self.extra_env_vars[environment.ARMORY_VERSION] = armory.__version__
 
     def _cleanup(self):
         log.info(f"deleting tmp_dir {self.tmp_dir}")
