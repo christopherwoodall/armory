@@ -3,9 +3,7 @@ Reference objects for armory paths
 """
 
 import os
-import pathlib
 import warnings  # armory.logs initialization depends on this module, use warnings instead
-
 
 from armory import configuration
 
@@ -66,7 +64,7 @@ class DockerPaths:
 
 class HostDefaultPaths:
     def __init__(self):
-        self.cwd = pathlib.Path.cwd().absolute()
+        self.cwd = os.getcwd()
         self.user_dir = os.path.expanduser("~")
         self.armory_dir = os.path.join(self.user_dir, ".armory")
         self.armory_config = os.path.join(self.armory_dir, "config.json")
