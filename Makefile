@@ -41,6 +41,11 @@ help: ## List commands
 -	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\t\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 
+.PHONY: run
+run: ## Place a commonly used command here
+- ARMORY_DEV_MODE=1 ARMORY_PRETEND_VERSION=0.17.0 armory run scenario_configs/cifar10_baseline.json --check
+
+
 .PHONY: venv
 venv:	## Setup a Virtual Environment
 -	echo -e "\033[36mSetting up virtual environment...\033[0m"
@@ -65,6 +70,7 @@ ipython:	## Setup an iPython Virtual Environment
 - ipykernel
 
 
+# TODO: check that armory is installed
 .PHONY: image
 image: ## Build the docker image
 -	echo -e "\033[36mBuilding image...\033[0m"
