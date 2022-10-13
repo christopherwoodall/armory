@@ -28,8 +28,4 @@ def ensure_image_present(image_name: str) -> str:
     print(f"Checking for {image_name}...")
     image_name=ImageMap().resolve(image_name)
 
-    print(image_name)
-
-    import sys
-    sys.exit(0)
-
+    return image_name
