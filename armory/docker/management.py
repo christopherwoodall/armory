@@ -36,7 +36,8 @@ class ArmoryInstance(object):
                 type="bind",
                 read_only=False,
             )
-            for dir in "cwd dataset_dir local_git_dir output_dir saved_model_dir tmp_dir".split()
+            for dir in "dataset_dir output_dir saved_model_dir tmp_dir".split()
+            # for dir in "cwd dataset_dir local_git_dir output_dir saved_model_dir tmp_dir".split()
         ]
 
         container_args = {
