@@ -38,13 +38,14 @@ ARG USER="armory"
 ARG PASSWORD="armory"
 ARG PIP_CACHE_DIR="/tmp/pip-cache"
 
-ENV ARMORY_CONTAINER="1"          \
-    PYTHONDONTWRITEBYTECODE="1"   \
-    PYTHON_VERSION="3.9"          \
-    CONDA_DIR="/opt/conda"        \
-    TZ="UTC"                      \
-    LC_ALL="C.UTF-8"              \
-    LANG="C.UTF-8"                \
+ENV ARMORY_CONTAINER="1"              \
+    PYTHONDONTWRITEBYTECODE="1"       \
+    PYTHON_VERSION="3.9"              \
+    CONDA_DIR="/opt/conda"            \
+    TZ="UTC"                          \
+    LC_ALL="C.UTF-8"                  \
+    LANG="C.UTF-8"                    \
+    DEBIAN_FRONTEND="noninteractive"  \
     PATH="/opt/conda/envs/base/bin:/opt/conda/bin:${PATH}"
 
 WORKDIR /workspace
