@@ -14,15 +14,8 @@ from armory.logs import log, is_progress
 class ImageMap(ImageMapper):
     repo = "twosixarmory"
     image = "fortress"
-    arsenal = ("pytorch", "pytorch-deepspeech", "tf2", "carla-mot", "fortress")
     tag = version.to_docker_tag(armory.__version__)
-
-    @classmethod
-    def resolve(cls, image_name):
-        instance = getattr(cls, hex(id(cls)), super(ImageMapper, cls).__new__(cls))
-        repo, image, tag = instance.sanitize_image_name(image_name)
-        return instance.find_image(repo, image, tag)
-
+    arsenal = ("pytorch", "pytorch-deepspeech", "tf2", "carla-mot", "fortress")
 
 
 def ensure_image_present(image_name: str) -> str:
@@ -39,3 +32,4 @@ def ensure_image_present(image_name: str) -> str:
 
     import sys
     sys.exit(0)
+

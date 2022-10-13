@@ -26,6 +26,14 @@ class ImageMapper:
         self.images = { c.attrs['RepoTags'][i]: c for c in rpc.images.list() for i in range(len(c.attrs['RepoTags'])) }
 
 
+
+    @classmethod
+    def resolve(cls, image_name):
+        instance = getattr(cls, hex(id(cls)), super(ImageMapper, cls).__new__(cls))
+        repo, image, tag = instance.sanitize_image_name(image_name)
+        return instance.find_image(repo, image, tag)
+
+
     def sanitize_image_name(self, image_name):
         """
         Return the components of user/repo:tag as (repo, image, tag)
