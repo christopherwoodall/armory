@@ -33,6 +33,14 @@ IMAGE_MAP = {
     "carla-mot": CARLA_MOT,
 }
 
+class ImageMap:
+    repository = "twosixarmory"
+    tag = version.to_docker_tag(armory.__version__)
+
+    def __init__(self):
+        log.trace(f"armory.__version__: {self.tag}")
+        ...
+
 
 def split_name(name: str):
     """
