@@ -3,7 +3,7 @@
 
 SHELL         := /bin/bash
 .SHELLFLAGS   := -eu -o pipefail -c
-.DEFAULT_GOAL := run
+.DEFAULT_GOAL := help
 
 .ONESHELL:             ;   # Recipes execute in same shell
 .NOTPARALLEL:          ;   # Wait for this target to finish
