@@ -123,11 +123,11 @@ ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/envs/base/lib/
 RUN groupadd -r armory && \
     # TODO: UID/GID
     #   useradd --gid $GID --uid $UID -r -g armory -m -d /workspace -s /bin/bash armory && \
-    useradd -r -g armory -m -d /workspace -s /bin/bash armory      && \
-    usermod -aG sudo armory                                        && \
-    echo "armory ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/armory   && \
-    cp /etc/skel/{.bashrc,.profile} /workspace                     && \
-    chmod 0440 /etc/sudoers.d/armory                               && \
+    useradd -r -g ${USER} -m -d /workspace -s /bin/bash ${USER}      && \
+    usermod -aG sudo ${USER}                                         && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER}   && \
+    cp /etc/skel/{.bashrc,.profile} /workspace                       && \
+    chmod 0440 /etc/sudoers.d/${USER}                                && \
     chown -R --from=root ${USER} /workspace
 
 ENV HOME /workspace
