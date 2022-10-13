@@ -97,8 +97,8 @@ RUN apt-key adv --fetch-keys \
         libnvinfer-plugin${LIBNVINFER_MAJOR_VERSION}                                \
         # libgl1-mesa-glx is needed for cv2 (opencv-python)
         libgl1-mesa-glx                                                          && \
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime                               && \
-        echo $TZ > /etc/timezone                                                 && \
+    # ln -snf /usr/share/zoneinfo/$TZ /etc/localtime                               && \
+    #     echo $TZ > /etc/timezone                                                 && \
     ldconfig
 
 # Install Conda
