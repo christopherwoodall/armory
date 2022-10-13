@@ -173,11 +173,11 @@ RUN apt-get purge $( dpkg --list | grep -P -o "linux-image-\d\S+"| head -n-1 ) -
     apt-get autoremove -y && \
     apt-get autoclean -y && \
     apt-get clean -y && \
-    conda clean -afy && \
+    conda clean -afy
     # mamba clean --all --quiet --yes && \
-    pip cache purge && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -f /var/log/*gz
+    # pip cache purge && \
+    # rm -rf /var/lib/apt/lists/* && \
+    # rm -f /var/log/*gz
 
 # Useful for updating pinned packages
 # RUN mamba update --name base --all && \
