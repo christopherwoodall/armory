@@ -20,7 +20,8 @@ services:
 
     volumes:
       - ./environment.yml:/app/environment.yml
-      - ./data:/workspace/
+      - ./:/workspace/app
+      # - ./notebooks:/workspace/notebooks
 
     stdin_open: true
     tty: true

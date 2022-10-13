@@ -24,9 +24,9 @@ ENV PYTHON_VERSION="3.9"               \
 # # TensorFlow requirement
 # ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/lib/
 
-COPY ./ /app/
+WORKDIR /workspace
 
-WORKDIR /app
+COPY ./ /workspace/app/
 
 USER root
 
@@ -66,15 +66,17 @@ RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-L
 # Create a user
 RUN useradd -m ${USER} && \
     cp /root/.bashrc /home/${USER}/ && \
-    mkdir -p /workspace && \
-    chown -R --from=root ${USER} {/app,/workspace,/home/$USER}
+    chown -R --from=root ${USER} {/workspace,/home/$USER}
+
+ENV HOME /workspace
 
 
 # ------------------------------------------------------------------
 # Environment Setup
 # ------------------------------------------------------------------
 FROM base AS staging
-RUN mamba env update --name base --file /app/environment.yml --prune && \
+
+RUN mamba env update --name base --file /workspace/app/environment.yml --prune && \
     mamba clean --all --yes
 
 
@@ -82,6 +84,9 @@ RUN mamba env update --name base --file /app/environment.yml --prune && \
 # Configuration & Clean Up
 # ------------------------------------------------------------------
 FROM staging AS pre-release
+
+ENV HOME /workspace
+
 RUN armory configure --use-default && \
     rm -rf /tmp/pip-cache
 
@@ -100,7 +105,7 @@ USER armory
 
 ENV HOME /workspace
 
-VOLUME ["/workspace", "/app", "/tmp", "/home/armory"]
+VOLUME ["/workspace", "/workspace/app", "/tmp", "/home/armory"]
 
 # Jupyter
 EXPOSE 8888
