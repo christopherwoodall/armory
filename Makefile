@@ -79,13 +79,19 @@ image: ## Build the docker image
 - docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --file ./docker/Dockerfile .
 - docker build --target pre-release --cache-from twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --file ./docker/Dockerfile .
 - docker build --compress --target release --cache-from twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
-
-
-.PHONY: latest
-latest: ## Tag local version as latest
-# -	echo -e "\033[36mBuilding image..."
 - echo -e "\033[36mTagging image as $(TAG)\033[0m"
-# -	docker build --force-rm --compress --progress=auto --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+- docker tag twosixarmory/$(IMAGE_NAME):$(TAG) twosixarmory/$(IMAGE_NAME):latest
+
+
+.PHONY: dev-image
+dev-image: ## Build developer image
+-	echo -e "\033[36mBuilding image...\033[0m"
+-	echo -e "\033[36mTagging image as $(TAG)\033[0m"
+-	docker build --target base --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
+- docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --file ./docker/Dockerfile .
+- docker build --target pre-release --cache-from twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --file ./docker/Dockerfile .
+- docker build --compress --target release --cache-from twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+- echo -e "\033[36mTagging image as $(TAG)\033[0m"
 - docker tag twosixarmory/$(IMAGE_NAME):$(TAG) twosixarmory/$(IMAGE_NAME):latest
 
 
