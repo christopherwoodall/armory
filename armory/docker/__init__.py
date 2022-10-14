@@ -7,6 +7,7 @@ import requests
 from armory.logs import log, is_progress
 
 
+# TODO: Not like this...
 class ImageMapper:
   def __new__(cls, *args, **kwargs):
       instance_id = hex(id(cls))

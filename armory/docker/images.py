@@ -6,6 +6,7 @@ from armory.logs import log, is_progress
 from armory.utils import version
 
 
+# TODO: Not like this...
 class ImageMap(ImageMapper):
     repo = "twosixarmory"
     image = "fortress"
