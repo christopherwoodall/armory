@@ -26,8 +26,6 @@ ARG LIBNVINFER_MAJOR_VERSION=8
 
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-runtime-ubuntu${UBUNTU_VERSION} AS base
 
-# set pip's cache directory using this environment variable, and use
-# ARG instead of ENV to ensure its only set when the image is built
 ARG CUDA
 ARG CUDA_VERSION
 ARG LIBNVINFER_MAJOR_VERSION
@@ -36,6 +34,8 @@ ARG UID=1000
 ARG GID=$UID
 ARG USER="armory"
 ARG PASSWORD="armory"
+# set pip's cache directory using this environment variable, and use
+# ARG instead of ENV to ensure its only set when the image is built
 ARG PIP_CACHE_DIR="/tmp/pip-cache"
 
 ENV ARMORY_CONTAINER="1"              \
@@ -55,7 +55,6 @@ COPY ./ /workspace/app/
 USER root
 
 SHELL ["/bin/bash", "-c"]
-
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -152,22 +151,6 @@ ENV HOME /workspace
 
 RUN armory configure --use-default
 
-# Install VS Code Server
-# RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-#     apt-get install -y nodejs && \
-#     npm install -g yarn && \
-#     yarn global add code-server
-#     (nohup -c "export PASSWORD=armory && export SHELL=/bin/bash && code-server --host 0.0.0.0 /workspace" 2> /dev/null&);
-
-# TODO: Configure Jupyter(add notebooks, extensions, config, etc)
-# TODO: Move launches to release
-# RUN (nohup \
-#         runuser \
-#             -l armory \
-#             -c "export PASSWORD=armory&&jupyter notebook --ip=0.0.0.0 --notebook-dir=/workspace/notebooks" \
-#         2> /dev/null & \
-#     );
-
 # Clean Up
 RUN apt-get purge $( dpkg --list | grep -P -o "linux-image-\d\S+"| head -n-1 ) -y && \
     apt-get autoremove -y && \
@@ -178,12 +161,6 @@ RUN apt-get purge $( dpkg --list | grep -P -o "linux-image-\d\S+"| head -n-1 ) -
     # pip cache purge && \
     # rm -rf /var/lib/apt/lists/* && \
     # rm -f /var/log/*gz
-
-# Useful for updating pinned packages
-# RUN mamba update --name base --all && \
-#     mamba clean --all --yes && \
-#     conda env export --no-builds > environment.yml
-
 
 # ------------------------------------------------------------------
 # Final Image
@@ -201,43 +178,6 @@ VOLUME ["/workspace", "/workspace/app", "/tmp", "/home/armory"]
 # Jupyter
 EXPOSE 8888
 
-# HEALTH
-# %{IRONBANK}% - HEALTHCHECK required every 10 seconds
-# HEALTHCHECK --interval=10s --timeout=1s --retries=5 \
-#   CMD curl -I -f --max-time 5 http://localhost:8080 || exit 1
 STOPSIGNAL SIGQUIT
 
-# ENTRYPOINT
-# %{IRONBANK}% - ENTRYPOINT is not allowed. Use CMD instead.
 CMD ["/bin/bash"]
-
-
-# ------------------------------------------------------------------
-# DEVELOPER NOTES:
-# ------------------------------------------------------------------
-# TODO: determine if this environment setup is needed
-#  $ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/cuda/lib64"
-#
-# NOTE: Conda/Mamba commands
-#   - Search through the revision history of an environment.
-#     $ mamba list --name base --revisions
-#   - Search for an available package, the command is slightly different in mamba.
-#     $ mamba repoquery search <package>
-#     $ mamba repoquery depends -a <package>
-#   - Export an environment to a YAML file.
-#     $ mamba env export --name base > environment.yml
-#
-# NOTE:
-#  - pytorch-lightning >= 1.5.0 will break Deep Speech 2
-#  - torchmetrics >= 0.8.0 will break pytorch-lightning 1.4
-#  - hydra-lightning installs omegaconf
-#  - google-cloud-storage needed for checkpoint.py import
-#  - only sox python bindings are installed; underlying sox binaries not needed
-#
-# NOTE: Listed dependencies of PyTorch Deep Speech 2, but do not appear
-#       to be used for inference (only for training), they are not installed:
-#         - torchelastic
-#         - wget
-#         - flask
-#         - fairscale
-# ------------------------------------------------------------------
