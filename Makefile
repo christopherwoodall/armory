@@ -42,7 +42,7 @@ help: ## List commands
 
 
 .PHONY: run
-run: ## Place a commonly used command here
+run: ## Append `ARMORY_DEV_MODE=1 ARMORY_PRETEND_VERSION=0.17.0` to run in dev mode
 - ARMORY_DEV_MODE=1 ARMORY_PRETEND_VERSION=0.17.0 armory run scenario_configs/cifar10_baseline.json --check
 
 
@@ -78,7 +78,7 @@ image: ## Build the docker image
 -	docker build --target base --tag twosixarmory/$(IMAGE_NAME)-base:$(TAG) --file ./docker/Dockerfile .
 - docker build --target staging --cache-from twosixarmory/$(IMAGE_NAME)-base:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --file ./docker/Dockerfile .
 - docker build --target pre-release --cache-from twosixarmory/$(IMAGE_NAME)-staging:$(TAG) --tag twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --file ./docker/Dockerfile .
-- docker build --target release --cache-from twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
+- docker build --compress --target release --cache-from twosixarmory/$(IMAGE_NAME)-pre-release:$(TAG) --tag twosixarmory/$(IMAGE_NAME):$(TAG) --file ./docker/Dockerfile .
 
 
 .PHONY: latest
