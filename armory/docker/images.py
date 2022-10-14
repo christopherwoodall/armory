@@ -19,6 +19,6 @@ def ensure_image_present(image_name: str) -> str:
     If image_name is available, return it. Otherwise, pull it from dockerhub.
     """
     log.trace(f"ensure_image_present {image_name}")
-    image_name=ImageMap().resolve(image_name)
-
+    image_name = ImageMap.resolve(image_name)
+    print(f"Using image: {image_name}")
     return image_name
