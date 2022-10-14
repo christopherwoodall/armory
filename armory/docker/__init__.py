@@ -85,7 +85,7 @@ class ImageMapper:
       log.success(f"pulled {repo}:{tag}")
       return image
     except docker.errors.NotFound:
-      log.error(f"Image {image_name} could not be downloaded")
+      log.error(f"Image {image} could not be downloaded")
       raise
     except requests.exceptions.ConnectionError:
       log.error("Docker connection refused. Is Docker Daemon running?")
