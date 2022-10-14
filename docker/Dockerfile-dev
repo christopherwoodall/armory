@@ -142,7 +142,8 @@ ENV HOME /workspace
 RUN armory configure --use-default
 
 # Enable automatic branch pulls
-RUN GIT_URL=`git config --get remote.origin.url`                                && \
+RUN cd app                                                                      && \
+    GIT_URL=`git config --get remote.origin.url`                                && \
     GIT_BRANCH=`git config --get remote.origin.url`                             && \
     git pull $GIT_URL                                                           && \
     git checkout $GIT_BRANCH                                                    && \
