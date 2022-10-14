@@ -109,6 +109,12 @@ compose: ## Run docker-compose
 -	docker-compose up --remove-orphans --build armory-$(IMAGE_NAME)
 
 
+PHONY: update
+update: ## git pull branch
+-	echo -e "\033[36mUpdating branch...\033[0m"
+-	git pull origin `git config --get remote.origin.url`
+
+
 ##
 # WIP: Windows support
 #   For Windows users, you can use the following command to run this Makefile:

@@ -36,6 +36,7 @@ class ImageMapper:
       log.info(f"Launching image: {docker_image}")
       return docker_image
 
+
   def sanitize_image_name(self, image_name):
       """
       Return the components of user/repo:tag as (repo, image, tag)
