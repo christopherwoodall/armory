@@ -150,6 +150,7 @@ RUN echo "pushd app && git pull && popd" >> ~/.bashrc
     # crontab /etc/cron.d/armory                                                  && \
     # touch /var/log/cron.log
 
+# TODO: Configure Jupyter(add notebooks, extensions, config, etc)
 # Install VS Code Server
 # RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 #     apt-get install -y nodejs && \
@@ -157,7 +158,6 @@ RUN echo "pushd app && git pull && popd" >> ~/.bashrc
 #     yarn global add code-server
 #     (nohup -c "export PASSWORD=armory && export SHELL=/bin/bash && code-server --host 0.0.0.0 /workspace" 2> /dev/null&);
 
-# TODO: Configure Jupyter(add notebooks, extensions, config, etc)
 # TODO: Move launches to release
 # RUN (nohup \
 #         runuser \
