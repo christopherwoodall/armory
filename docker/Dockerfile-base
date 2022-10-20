@@ -12,8 +12,9 @@
 #   [1] https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu.Dockerfile
 #   [2] https://bcourses.berkeley.edu/courses/1478831/pages/glibcxx-missing
 #   [3] https://docs.ycrc.yale.edu/clusters-at-yale/guides/conda/#mamba-the-conda-alternative
-#   [4] https://github.com/tensorflow/models/tree/master/research/object_detection
-#   [5] https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html
+#   [4] https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html
+#   [5] https://github.com/tensorflow/models/tree/master/research/object_detection
+#   [6] https://github.com/tensorflow/models/blob/master/research/object_detection/dockerfiles/tf2/Dockerfile
 #
 ##########################################################################################
 
@@ -27,17 +28,18 @@ ARG LIBNVINFER_MAJOR_VERSION=8
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-runtime-ubuntu${UBUNTU_VERSION} AS base
 
 
-ARG CUDA
-ARG CUDA_VERSION
-ARG LIBNVINFER_MAJOR_VERSION
-ARG UBUNTU_VERSION
-ARG UID=1000
-ARG GID=$UID
-ARG USER="armory"
-ARG PASSWORD="armory"
-# set pip's cache directory using this environment variable, and use
-# ARG instead of ENV to ensure its only set when the image is built
-ARG PIP_CACHE_DIR="/tmp/pip-cache"
+ARG CUDA                      \
+    CUDA_VERSION              \
+    LIBNVINFER_MAJOR_VERSION  \
+    UBUNTU_VERSION            \
+    UID=1000                  \
+    GID=$UID                  \
+    USER="armory"             \
+    PASSWORD="armory"         \
+    # set pip's cache directory using this environment variable, and use
+    # ARG instead of ENV to ensure its only set when the image is built
+    PIP_CACHE_DIR="/tmp/pip-cache"    \
+    DEBIAN_FRONTEND="noninteractive"  \
 
 ENV ARMORY_CONTAINER="1"              \
     PYTHONDONTWRITEBYTECODE="1"       \
@@ -46,7 +48,6 @@ ENV ARMORY_CONTAINER="1"              \
     TZ="UTC"                          \
     LC_ALL="C.UTF-8"                  \
     LANG="C.UTF-8"                    \
-    DEBIAN_FRONTEND="noninteractive"  \
     PATH="/opt/conda/envs/base/bin:/opt/conda/bin:${PATH}"
 
 # CUDA, TensorFlow, Object Detection API ( 2, 4, 5 )
@@ -135,10 +136,58 @@ RUN mamba env update --name base --file /workspace/app/environment.yml --prune &
 
 
 # ------------------------------------------------------------------
-# TensorFlow Object Detection API ( 4, 5 )
+# TensorFlow Object Detection API ( 4, 5, 6 )
 # ------------------------------------------------------------------
-RUN wget https://github.com/tensorflow/models/archive/master.zip
+# https://github.com/tensorflow/models/blob/master/research/object_detection/dockerfiles/tf2/Dockerfile
+RUN apt-get update && apt-get install -y  \
+    git                                   \
+    gpg-agent                             \
+    python3-cairocffi                     \
+    protobuf-compiler                     \
+    python3-pil                           \
+    python3-lxml                          \
+    python3-tk                            \
+    python3-opencv                        \
+    wget
 
+# Install gcloud and gsutil commands
+# https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
+# RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"                                                                       && \
+#     echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list  && \
+#     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -                                                   && \
+#     apt-get update -y                                                                                                            && \
+#     apt-get install -y google-cloud-sdk
+
+# RUN cd /workspace/lib                                    && \
+#     git clone https://github.com/tensorflow/models.git   && \
+#     mv models tensorflow-models                          && \
+#     # Compile protobuf configs
+#     (cd tensorflow-models && protoc object_detection/protos/*.proto --python_out=.) && \
+#     mv tensorflow-models/research/object_detection object_detection                 && \
+#     cd object_detection                                                             && \
+#     # Install TF Object Detection API
+#    pip install --editable .
+
+# RUN cp object_detection/packages/tf2/setup.py ./
+# ENV PATH="/home/tensorflow/.local/bin:${PATH}"
+
+# Installs google cloud sdk, this is mostly for using gsutil to export model.
+# RUN wget -nv \
+#     https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz && \
+#     mkdir /root/tools && \
+#     tar xvzf google-cloud-sdk.tar.gz -C /root/tools && \
+#     rm google-cloud-sdk.tar.gz && \
+#     /root/tools/google-cloud-sdk/install.sh --usage-reporting=false \
+#         --path-update=false --bash-completion=false \
+#         --disable-installation-options && \
+#     rm -rf /root/.config/* && \
+#     ln -s /root/.config /config && \
+#     rm -rf /root/tools/google-cloud-sdk/.install/.backup
+
+# # Path configuration
+# ENV PATH $PATH:/root/tools/google-cloud-sdk/bin
+# # Make sure gsutil will use the default service account
+# RUN echo '[GoogleCompute]\nservice_account = default' > /etc/boto.cfg
 
 # # Create a non-root user
 # RUN groupadd -r armory && \
@@ -185,7 +234,7 @@ WORKDIR /workspace
 
 ENV HOME /workspace
 
-VOLUME ["/workspace", "/workspace/app", "/workspace/data", "/workspace/lib", "/workspace/logs", "/workspace/plugins", "/workspace/notebooks", "/tmp", "/home/armory" ]
+VOLUME ["/workspace", "/workspace/app", "/workspace/data", "/workspace/lib", "/workspace/logs", "/workspace/plugins", "/workspace/notebooks", "/tmp", "/home/armory"]
 
 # Jupyter
 EXPOSE 8888
