@@ -1,0 +1,31 @@
+---
+# docker-compose --file docker-compose.yml up -d --build armory
+# docker-compose exec armory /bin/bash
+
+version: "3"
+
+services:
+  armory-fortress:
+    container_name: armory
+    image: twosixarmory/fortress:latest
+
+    build:
+     context: .
+     dockerfile: ./docker/Dockerfile
+
+    command: ['ipython']
+
+    ports:
+      - 8888:8888
+
+    volumes:
+      - ./environment.yml:/app/environment.yml
+      - ./:/workspace/app
+      # - ./notebooks:/workspace/notebooks
+
+    stdin_open: true
+    tty: true
+
+
+  # armory-launcher:  # Spawns containers using host daemon
+  # armory-database:  # Stores training data for whitebox models and tar'd blackbox models
