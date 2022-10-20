@@ -1,7 +1,4 @@
 ---
-# docker-compose --file docker-compose.yml up -d --build armory
-# docker-compose exec armory /bin/bash
-
 version: "3"
 
 services:
@@ -11,7 +8,7 @@ services:
 
     build:
      context: .
-     dockerfile: ./docker/Dockerfile
+     dockerfile: ./docker/Dockerfile-base
 
     command: ['ipython']
 
@@ -29,3 +26,22 @@ services:
 
   # armory-launcher:  # Spawns containers using host daemon
   # armory-database:  # Stores training data for whitebox models and tar'd blackbox models
+
+######
+# NOTES
+#  o Overview
+#     - armory-fortress container is the main container that runs the Armory
+#     - armory-launcher container is used to spawn containers using the host daemon
+#     - armory-database container is used to store training data for whitebox models and tar'd blackbox models
+#
+#  o Best method for handling data...
+#     - armory-fortress container mounts a volume to the host machine
+#     - model zoo?
+#       * https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md
+#     - training data + instructions for training?
+#
+# mkdir -p workspace/{app,data,logs,lib,plugins}
+#
+# docker-compose --file docker-compose.yml up -d --build armory-fortress
+# docker-compose exec armory /bin/bash
+######
