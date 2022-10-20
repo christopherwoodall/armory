@@ -34,6 +34,13 @@ If possible, we recommend downloading the base image instead of building, which 
 
 
 ## Docker Volume Mounts
+Mount map and locations are shown below:
+
+| Application Path | Container Path |
+| :--------------: | :------------: |
+| `./` | `/workspace/app` |
+
+
 Host directory path for datasets, saved_models, and outputs are configurable. To modify those directories simply run `armory configure`.
 The defaults are shown below:
 
