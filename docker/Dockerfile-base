@@ -49,9 +49,10 @@ ENV ARMORY_CONTAINER="1"              \
     DEBIAN_FRONTEND="noninteractive"  \
     PATH="/opt/conda/envs/base/bin:/opt/conda/bin:${PATH}"
 
-# CUDA related exports
+# CUDA, TensorFlow, Object Detection API ( 2, 4, 5 )
 ENV PATH="/usr/local/cuda-${CUDA}/bin${PATH:+:${PATH}}" \
-    LD_LIBRARY_PATH="/usr/local/cuda-${CUDA}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+    LD_LIBRARY_PATH="/opt/conda/envs/base/lib/:/usr/local/cuda-${CUDA}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+# ENV LD_LIBRARY_PATH="/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH"
 
 WORKDIR /workspace
 
@@ -118,7 +119,7 @@ RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-L
     conda init bash
 
 # TensorFlow requirement ( 2 )
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/envs/base/lib/
+# ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/envs/base/lib/
 
 # TensorFlow requirement ( 4, 5 )
 # TODO: Object Detection API
