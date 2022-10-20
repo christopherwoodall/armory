@@ -185,17 +185,7 @@ WORKDIR /workspace
 
 ENV HOME /workspace
 
-VOLUME [
-    "/workspace",
-    "/workspace/app",
-    "/workspace/data",
-    "/workspace/lib",
-    "/workspace/logs",
-    "/workspace/plugins",
-    "/workspace/notebooks",
-    "/tmp",
-    "/home/armory"
-]
+VOLUME ["/workspace", "/workspace/app", "/workspace/data", "/workspace/lib", "/workspace/logs", "/workspace/plugins", "/workspace/notebooks", "/tmp", "/home/armory" ]
 
 # Jupyter
 EXPOSE 8888
