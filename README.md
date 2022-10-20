@@ -23,6 +23,12 @@ their respective implementations in the [Adversarial Robustness Toolbox (ART)](h
 
 
 # Installation & Configuration
+# Linux Installer
+```
+curl -sSL https://raw.githubusercontent.com/twosixlabs/armory/master/tools/install.sh | bash
+```
+
+# Python Package
 ```bash
 pip install armory-testbed
 ```
