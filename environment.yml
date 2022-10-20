@@ -11,7 +11,7 @@ channels:
 
 dependencies:
   - python=3.9
-  - pip
+  - pip>22.0
   - git
   - ipykernel
   - six
