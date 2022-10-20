@@ -66,7 +66,7 @@ SHELL ["/bin/bash", "-c"]
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Create directory layout
-RUN mkdir -p workspace/{app,data,logs,lib,plugins}
+RUN mkdir -p /workspace/{app,data,logs,lib,plugins}
 
 # Basic Apt-get Bits
 RUN apt-key adv --fetch-keys \
@@ -140,18 +140,18 @@ RUN mamba env update --name base --file /workspace/app/environment.yml --prune &
 RUN wget https://github.com/tensorflow/models/archive/master.zip
 
 
-# Create a non-root user
-RUN groupadd -r armory && \
-    # TODO: UID/GID
-    #   useradd --gid $GID --uid $UID -r -g armory -m -d /workspace -s /bin/bash armory && \
-    useradd -r -g ${USER} -m -d /workspace -s /bin/bash ${USER}      && \
-    usermod -aG sudo ${USER}                                         && \
-    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER}   && \
-    cp /etc/skel/{.bashrc,.profile} /workspace                       && \
-    chmod 0440 /etc/sudoers.d/${USER}                                && \
-    chown -R --from=root ${USER} /workspace
+# # Create a non-root user
+# RUN groupadd -r armory && \
+#     # TODO: UID/GID
+#     #   useradd --gid $GID --uid $UID -r -g armory -m -d /workspace -s /bin/bash armory && \
+#     useradd -r -g ${USER} -m -d /workspace -s /bin/bash ${USER}      && \
+#     usermod -aG sudo ${USER}                                         && \
+#     echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER}   && \
+#     cp /etc/skel/{.bashrc,.profile} /workspace                       && \
+#     chmod 0440 /etc/sudoers.d/${USER}                                && \
+#     chown -R --from=root ${USER} /workspace
 
-ENV HOME /workspace
+# ENV HOME /workspace
 
 
 # ------------------------------------------------------------------
@@ -179,13 +179,23 @@ RUN apt-get purge $( dpkg --list | grep -P -o "linux-image-\d\S+"| head -n-1 ) -
 # ------------------------------------------------------------------
 FROM pre-release AS release
 
-USER armory
+# USER armory
 
 WORKDIR /workspace
 
 ENV HOME /workspace
 
-VOLUME ["/workspace", "/workspace/app", "/tmp", "/home/armory"]
+VOLUME [
+    "/workspace",
+    "/workspace/app",
+    "/workspace/data",
+    "/workspace/lib",
+    "/workspace/logs",
+    "/workspace/plugins",
+    "/workspace/notebooks",
+    "/tmp",
+    "/home/armory"
+]
 
 # Jupyter
 EXPOSE 8888
