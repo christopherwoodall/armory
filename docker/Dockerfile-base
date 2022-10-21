@@ -55,9 +55,9 @@ ENV PATH="/usr/local/cuda-${CUDA}/bin${PATH:+:${PATH}}" \
     LD_LIBRARY_PATH="/opt/conda/envs/base/lib/:/usr/local/cuda-${CUDA}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
 # ENV LD_LIBRARY_PATH="/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH"
 
-WORKDIR /workspace
+WORKDIR /armory-repo
 
-COPY ./ /workspace/app/
+COPY ./ /armory-repo
 
 USER root
 
@@ -67,7 +67,8 @@ SHELL ["/bin/bash", "-c"]
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Create directory layout
-RUN mkdir -p /workspace/{app,data,logs,lib,plugins}
+RUN mkdir -p /workspace/{app,data,logs,lib,plugins} && \
+    ln -s /armory-repo /workspace/app
 
 # Basic Apt-get Bits
 RUN apt-key adv --fetch-keys \
