@@ -16,19 +16,19 @@ Model the example scenario configuration data after [MITRE | ATLAS](https://atla
 │   │
 │   ├─ 01-notebooks/
 │   │
-│   ├─ 10-persistence/
+│   ├─ 60-persistence/
 │   │
-│   ├─ 20-evasion/
+│   ├─ 70-evasion/
 │   │
-│   ├─ 30-discovery/
+│   ├─ 80-discovery/
 │   │
-│   ├─ 40-collection/
+│   ├─ 90-collection/
 │   │
-│   ├─ 50-attack-staging/
+│   ├─ 100-attack-staging/
 │   │
-│   ├─ 60-exfiltration/
+│   ├─ 110-exfiltration/
 │   │
-│   ├─ 70-impact/
+│   ├─ 120-impact/
 │   │
 │   ├─ 500-defenses/
 │   │
