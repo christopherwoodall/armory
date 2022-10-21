@@ -285,7 +285,7 @@ class Evaluator(object):
             kwargs = {"user": self.get_id()}
             python = "python"
 
-        cmd = f"{python} -m armory.scenarios.main {b64_config}{options} --base64"
+        cmd = f"armory-runner {b64_config}{options} --base64"
         return runner.exec_cmd(cmd, **kwargs)
 
     def _run_command(self, runner: ArmoryInstance, command: str) -> int:
