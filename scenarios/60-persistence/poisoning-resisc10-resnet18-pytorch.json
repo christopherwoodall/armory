@@ -1,5 +1,5 @@
 {
-  "_description": "RESISC10 poison image classification, contributed by MITRE Corporation (eval 5)",
+  "_description": "RESISC10 poison image classification, contributed by MITRE Corporation (eval 1-4)",
   "adhoc": {
     "compute_fairness_metrics": true,
     "experiment_id": 0,
