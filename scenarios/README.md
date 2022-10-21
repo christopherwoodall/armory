@@ -1,6 +1,11 @@
 
 # TODO
 
+
+## Naming Schema
+<attack>-<dataset>-<model>-<extra>.json
+
+
 ## Notes
 - Issue: https://github.com/twosixlabs/armory/issues/1664
 
