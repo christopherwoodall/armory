@@ -23,8 +23,6 @@ on:
         default: false
 
   issue_comment:
-    types: [created, edited]
-
 
 
   # NOOP used to register a workflow_dispatch event.
