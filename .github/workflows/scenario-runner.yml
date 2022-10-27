@@ -8,7 +8,7 @@ on:
     inputs:
       experiments_dir:
         description: 'Experiments Directory'
-        # required: false
+        required: false
         default: eval6
         type: choice
         options:
@@ -18,16 +18,17 @@ on:
 
       debug_enabled:
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-        # required: false
+        required: false
         default: false
         type: boolean
 
   # NOOP used to register a workflow_dispatch event.
   # Developers should add this to their branch's workflow
   # in order to register an event.
-  pull_request:
-# env:
-#   ACTION_REGISTER_EVENT: "${{ github.event_name == 'pull_request' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[register action]')) ||  }}"
+  push:
+    branches:
+      - register-gh-ci-workflows
+  #     - <YOUR_BRANCH>
 
 
 jobs:
