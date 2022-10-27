@@ -22,37 +22,25 @@ on:
         required: false
         default: false
 
+  issue_comment:
+    types: [created, edited]
+
+
+
   # NOOP used to register a workflow_dispatch event.
   # Developers should add this to their branch's workflow
   # in order to register an event.
-  issue_comment:
-    types: [created, edited]
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - ready_for_review
-    # paths:
-    #   - '.github/'
-    branches:
-      - develop
-      - master
-
   push:
-    branches:
-      - develop
-      - master
-
-
-env:
-  ACTION_REGISTER_EVENT: "${{ github.event_name == 'pull_request' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[register action]')) || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '!workflow register')) }}"
+# env:
+#   ACTION_REGISTER_EVENT: "${{ github.event_name == 'pull_request' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[register action]')) ||  }}"
 
 
 jobs:
   matrix_generator:
     name: Matrix Generator
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' && env.ACTION_REGISTER_EVENT != 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '!workflow register')) }}
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
