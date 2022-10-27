@@ -4,6 +4,13 @@
 name: 🚂 Scenario Runner
 
 on:
+  push: # NOOP used to register a workflow_dispatch event.
+        # Developers should add this to their branch's workflow
+        # in order to register an event.
+    branches:
+      - develop
+      - master
+
   workflow_dispatch:
     inputs:
       experiments_dir:
@@ -23,9 +30,30 @@ on:
 
 
 jobs:
+  # TODO: Document this a little better.
+  # Adding the text '[register action]' to a commit message will
+  # execute this job. This job is used to register a workflow_dispatch
+  # event for a branch.
+  # Including the text "[skip ci]" in you commit message
+  # will prevent the workflow from running.
+  register_action:
+    name: 📝 Register Action
+    runs-on: ubuntu-latest
+    if: "github.event_name == 'push'"
+    outputs:
+      register_action: ${{ steps.register_action.outputs.register_event }}
+    steps:
+      - name: 📝 Register Action
+        id: register_action
+        run: |
+          echo "::set-output name=register_event::$(echo ${{ github.event.head_commit.message }} | grep -q '\[register action\]' && echo true || echo false)"
+
+
   matrix_generator:
     name: Matrix Generator
     runs-on: ubuntu-latest
+    needs: [register_action]
+    if: "needs.register_action.outputs.register_event == 'false'"
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
