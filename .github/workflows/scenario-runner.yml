@@ -22,9 +22,6 @@ on:
         required: false
         default: false
 
-  issue_comment:
-
-
   # NOOP used to register a workflow_dispatch event.
   # Developers should add this to their branch's workflow
   # in order to register an event.
@@ -38,7 +35,7 @@ jobs:
   matrix_generator:
     name: Matrix Generator
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '!workflow register')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
