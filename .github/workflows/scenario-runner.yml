@@ -13,22 +13,22 @@ on:
   #     - <YOUR_BRANCH>
 
   workflow_dispatch:
-    inputs:
-      experiments_dir:
-        description: 'Experiments Directory'
-        required: false
-        default: eval6
-        type: choice
-        options:
-        - eval6
-        - eval5
-        - eval1-4
+    # inputs:
+    #   experiments_dir:
+    #     description: 'Experiments Directory'
+    #     required: false
+    #     default: eval6
+    #     type: choice
+    #     options:
+    #     - eval6
+    #     - eval5
+    #     - eval1-4
 
-      debug_enabled:
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-        required: false
-        default: false
-        type: boolean
+    #   debug_enabled:
+    #     description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+    #     required: false
+    #     default: false
+    #     type: boolean
 
 
 jobs:
