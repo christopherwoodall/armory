@@ -4,13 +4,6 @@
 name: 🚂 Scenario Runner
 
 on:
-  push: # NOOP used to register a workflow_dispatch event.
-        # Developers should add this to their branch's workflow
-        # in order to register an event.
-    branches:
-      - develop
-      - master
-
   workflow_dispatch:
     inputs:
       experiments_dir:
@@ -27,6 +20,18 @@ on:
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
         required: false
         default: false
+
+  # NOOP used to register a workflow_dispatch event.
+  # Developers should add this to their branch's workflow
+  # in order to register an event.
+  pull_request:
+    branches:
+      - develop
+      - master
+  push:
+    branches:
+      - develop
+      - master
 
 
 jobs:
@@ -45,7 +50,7 @@ jobs:
   register_action:
     name: 📝 Register Action
     runs-on: ubuntu-latest
-    if: "github.event_name == 'push'"
+    # if: "github.event_name == 'push'"
     outputs:
       register_action: ${{ steps.register_action.outputs.register_event }}
     steps:
