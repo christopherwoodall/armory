@@ -36,6 +36,12 @@ jobs:
   # event for a branch.
   # Including the text "[skip ci]" in you commit message
   # will prevent the workflow from running.
+  #
+  #   Commit Message  |                Action
+  # ------------------|------------------------------------
+  # [register action] | Register a workflow_dispatch event
+  # [skip ci]         | Skip the workflow
+
   register_action:
     name: 📝 Register Action
     runs-on: ubuntu-latest
