@@ -38,9 +38,14 @@ on:
       - develop
       - master
 
+  push:
+    branches:
+      - develop
+      - master
+
 
 env:
-  ACTION_REGISTER_EVENT: "${{ github.event_name == 'pull_request' && contains(github.event.head_commit.message, '[register action]') || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '!workflow register')) }}"
+  ACTION_REGISTER_EVENT: "${{ github.event_name == 'pull_request' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[register action]')) || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '!workflow register')) }}"
 
 
 jobs:
