@@ -12,9 +12,9 @@ on:
         required: false
         default: eval6
         options:
-          - eval6
-          - eval5
-          - eval1-4
+        - eval6
+        - eval5
+        - eval1-4
 
       debug_enabled:
         type: boolean
