@@ -4,6 +4,14 @@
 name: 🚂 Scenario Runner
 
 on:
+  # NOOP used to register a workflow_dispatch event.
+  # Developers should add this to their branch's workflow
+  # in order to register an event.
+  # push:
+  #   branches:
+  #     - register-gh-ci-workflows
+  #     - <YOUR_BRANCH>
+
   workflow_dispatch:
     inputs:
       experiments_dir:
@@ -21,14 +29,6 @@ on:
         required: false
         default: false
         type: boolean
-
-  # NOOP used to register a workflow_dispatch event.
-  # Developers should add this to their branch's workflow
-  # in order to register an event.
-  push:
-    branches:
-      - register-gh-ci-workflows
-  #     - <YOUR_BRANCH>
 
 
 jobs:
