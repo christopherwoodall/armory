@@ -16,16 +16,18 @@ PROFILE_ROOT="/workspace"
 SOURCE_ROOT="${PROFILE_ROOT}/src"
 
 
-export HOME="${PROFILE_ROOT}"
+# # export HOME="${PROFILE_ROOT}"
 
-conda init bash
-source ~/.bashrc
+# Check if `/.patched` exists
+if [ ! -f "/.patched" ]; then
+  conda init bash
+  source ~/.bashrc
 
-
-pushd "${SOURCE_ROOT}" > /dev/null || exit 1
-  pip install --upgrade pip
-  pip install -e '.[datasets]'
-popd > /dev/null
+  pushd "${SOURCE_ROOT}" > /dev/null || exit 1
+    pip install --upgrade pip
+    pip install -e '.[datasets]'
+  popd > /dev/null
+fi
 
 
 pushd "${PROFILE_ROOT}" > /dev/null || exit 1
@@ -39,21 +41,22 @@ pushd "${PROFILE_ROOT}" > /dev/null || exit 1
 
     echo "Converting ${DATASET_NAME} to TFDS format"
     mkdir -p ./data
-    # Patch the file
-    sed -i 's/import datasets/import tensorflow_datasets as datasets/g' mnist.py
-    sed -i 's/from datasets.tasks import ImageClassification/# from datasets import image_classification/g' mnist.py
-    # sed -i 's/from datasets.tasks import ImageClassification/from datasets import image_classification/g' mnist.py
-    sed -i 's/ImageClassification/datasets.image_classification/g' mnist.py
-    sed -i 's/datasets.GeneratorBasedBuilder/datasets.core.GeneratorBasedBuilder/g' mnist.py
+    # # Patch the file
+    # sed -i 's/import datasets/import tensorflow_datasets as datasets/g' mnist.py
+    # sed -i 's/from datasets.tasks import ImageClassification/# from datasets import image_classification/g' mnist.py
+    # # sed -i 's/from datasets.tasks import ImageClassification/from datasets import image_classification/g' mnist.py
+    # sed -i 's/ImageClassification/datasets.image_classification/g' mnist.py
+    # sed -i 's/datasets.GeneratorBasedBuilder/datasets.core.GeneratorBasedBuilder/g' mnist.py
 
-    # Tensorflow Dataset Directory
-    TFDS_DATA_DIR="`pwd`/data" tfds build \
-      --pdb \
-      --overwrite
-      # --data_dir="${PROFILE_ROOT}/datasets/${DATASET_NAME}/data"
+    # # Tensorflow Dataset Directory
+    # TFDS_DATA_DIR="`pwd`/data" tfds build \
+    #   --pdb \
+    #   --overwrite
+    #   # --data_dir="${PROFILE_ROOT}/datasets/${DATASET_NAME}/data"
 
   popd
 popd > /dev/null
 
+touch /.patched
 
 /bin/bash
