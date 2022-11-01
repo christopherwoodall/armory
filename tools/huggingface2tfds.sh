@@ -17,7 +17,7 @@ PROFILE_ROOT="${PROJECT_ROOT}/profile"
 
 pushd "${PROJECT_ROOT}" > /dev/null || exit 1
   if [ ! -d "${PROFILE_ROOT}" ]; then
-      mkdir -p "${PROFILE_ROOT}/"{datasets,models,workspace}
+      mkdir -p "${PROFILE_ROOT}/"{datasets,models,tmp,workspace}
   fi
 
   if [ ! -d "${PROFILE_ROOT}/workspace/jupyter/notebooks" ]; then
@@ -31,17 +31,24 @@ popd > /dev/null
 
 
 pushd "${PROFILE_ROOT}" > /dev/null || exit 1
-  mkdir -p datasets/${DATASET_NAME}/data
+  mkdir -p datasets/${DATASET_NAME}
   pushd datasets/${DATASET_NAME}
-    # git lfs install
-    GIT_LFS_SKIP_SMUDGE="${SKIP_LFS}" git clone https://huggingface.co/datasets/${DATASET_NAME} .
+    if [ ! -d .git ]; then
+      # git lfs install
+      GIT_LFS_SKIP_SMUDGE="${SKIP_LFS}" git clone https://huggingface.co/datasets/${DATASET_NAME} .
+    fi
+    git pull
 
     # echo "Converting ${DATASET_NAME} to TFDS format"
-    # tfds new ${DATASET_NAME}
+    mkdir -p ./data
+    # Patch the file
+    sed -i 's/import datasets/import tensorflow_datasets as datasets/g' mnist.py
+    sed -i 's/from datasets.tasks import ImageClassification/from datasets import image_classification/g' mnist.py
+    sed -i 's/ImageClassification/image_classification/g' mnist.py
+
     # Tensorflow Dataset Directory
-    TFDS_DATA_DIR="`pwd`/data" \
-    tfds build     \
-      --pdb        \
+    TFDS_DATA_DIR="`pwd`/data" tfds build \
+      --pdb \
       --overwrite
       # --data_dir="${PROFILE_ROOT}/datasets/${DATASET_NAME}/data"
 
