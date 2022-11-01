@@ -1,0 +1,16 @@
+---
+# Armory Configurations
+
+profile:
+  name: "default"
+  paths:
+    prefix: "./"
+    data: "data/"
+    cache: "cache/"
+    export: "export/"
+    import: "import/"
+    temp: "temp/"
+    config: "config/"
+    logs: "logs/"
+    assets: "assets/"
+    armory: "armory/"
