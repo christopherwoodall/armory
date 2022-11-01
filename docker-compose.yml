@@ -1,0 +1,29 @@
+---
+version: "3"
+services:
+  armory-launcher:
+    container_name: armory-launcher
+    image: twosixarmory/pytorch:latest
+    # command: ["tail", "-f", "/dev/null"]
+    # entrypoint: [ "/bin/bash" ]
+    ports:
+      - 53:53
+      - 443:443
+      - 8888:8888
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - ./tmp/armory-shell.sh:/tmp/armory-shell.sh:z
+      - ./tmp/docker.management.patch:/tmp/docker.management.patch:z
+      - ./data/:/workspace/data/:z
+      - ./tmp/config.json:/root/.armory/config.json:z
+      - ./armory/scenario_configs/:/workspace/scenarios/:z
+      - ./armory:/armory-repo/:z
+      # - ./armory:/workspace/src/:z
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           capabilities: [gpu]
+    # tty: true
+    stdin_open: true
