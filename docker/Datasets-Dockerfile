@@ -1,0 +1,4 @@
+
+
+FROM twosixarmory/pytorch:latest AS build
+
