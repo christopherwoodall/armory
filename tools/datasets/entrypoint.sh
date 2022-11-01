@@ -44,7 +44,7 @@ pushd "${PROFILE_ROOT}" > /dev/null || exit 1
     sed -i 's/from datasets.tasks import ImageClassification/# from datasets import image_classification/g' mnist.py
     # sed -i 's/from datasets.tasks import ImageClassification/from datasets import image_classification/g' mnist.py
     sed -i 's/ImageClassification/datasets.image_classification/g' mnist.py
-    sed -i 's/datasets.GeneratorBasedBuilder/tfds.core.GeneratorBasedBuilder/g' mnist.py
+    sed -i 's/datasets.GeneratorBasedBuilder/datasets.core.GeneratorBasedBuilder/g' mnist.py
 
     # Tensorflow Dataset Directory
     TFDS_DATA_DIR="`pwd`/data" tfds build \
