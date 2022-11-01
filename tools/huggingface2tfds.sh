@@ -6,7 +6,9 @@
 # EXAMPLE:
 #   $ ./huggingface2tfds.sh glue/mrpc 1.0 /tmp/mrpc
 
-DATASET_NAME="${1:-mnist}"
+DATASET_NAME="${1:-mnist}"  # Dataset name
+SKIP_LFS="${2:-1}"          # Clone without large files
+
 
 PROJECT_ROOT=`git rev-parse --show-toplevel`
 # TODO: Add install prefix; e.g. `/opt/armory`
@@ -18,23 +20,30 @@ pushd "${PROJECT_ROOT}" > /dev/null || exit 1
       mkdir -p "${PROFILE_ROOT}/"{datasets,models,workspace}
   fi
 
-  mkdir -p "${PROFILE_ROOT}/workspace/"{scenarios,tutorials,jupyter}
-  mkdir -p "${PROFILE_ROOT}/workspace/jupyter/notebooks"
-  mv scenario_configs "${PROFILE_ROOT}/workspace/scenarios"
-  mv tutorials "${PROFILE_ROOT}/workspace/tutorials"
-  mv notebooks "${PROFILE_ROOT}/workspace/jupyter/notebooks"
+  if [ ! -d "${PROFILE_ROOT}/workspace/jupyter/notebooks" ]; then
+    mkdir -p "${PROFILE_ROOT}/workspace/"{scenarios,tutorials,jupyter}
+    mkdir -p "${PROFILE_ROOT}/workspace/jupyter/notebooks"
+    mv scenario_configs "${PROFILE_ROOT}/workspace/scenarios"
+    mv tutorials "${PROFILE_ROOT}/workspace/tutorials"
+    mv notebooks "${PROFILE_ROOT}/workspace/jupyter/notebooks"
+  fi
 popd > /dev/null
 
 
 pushd "${PROFILE_ROOT}" > /dev/null || exit 1
-  mkdir -p datasets/${DATASET_NAME}
+  mkdir -p datasets/${DATASET_NAME}/data
   pushd datasets/${DATASET_NAME}
     # git lfs install
-    # Clone without large files
-    # GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/datasets/${DATASET_NAME} .
-    git clone https://huggingface.co/datasets/${DATASET_NAME} .
+    GIT_LFS_SKIP_SMUDGE="${SKIP_LFS}" git clone https://huggingface.co/datasets/${DATASET_NAME} .
 
     # echo "Converting ${DATASET_NAME} to TFDS format"
+    # tfds new ${DATASET_NAME}
+    # Tensorflow Dataset Directory
+    TFDS_DATA_DIR="`pwd`/data" \
+    tfds build     \
+      --pdb        \
+      --overwrite
+      # --data_dir="${PROFILE_ROOT}/datasets/${DATASET_NAME}/data"
 
   popd
 popd > /dev/null
