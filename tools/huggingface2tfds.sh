@@ -35,7 +35,7 @@ fi
 
 pushd "${PROJECT_ROOT}" > /dev/null || exit 1
   if [ ! -d "${PROFILE_ROOT}" ]; then
-      mkdir -p "${PROFILE_ROOT}/"{datasets,models,tmp,workspace}
+      mkdir -p "${PROFILE_ROOT}/"{datasets,models,tmp}
   fi
 
 #   if [ ! -d "${PROFILE_ROOT}/workspace/jupyter/notebooks" ]; then
@@ -45,10 +45,12 @@ pushd "${PROJECT_ROOT}" > /dev/null || exit 1
 #     mv tutorials "${PROFILE_ROOT}/workspace/tutorials"
 #     mv notebooks "${PROFILE_ROOT}/workspace/jupyter/notebooks"
 #   fi
+
+  $COMPOSE_COMMAND run --entrypoint="/bin/bash -c /tmp/entrypoint.sh" --workdir="/workspace" armory-datasets
+
 popd > /dev/null
 
 
-$COMPOSE_COMMAND run --entrypoint="/bin/bash -c /tmp/entrypoint.sh" --workdir="/workspace" armory-datasets
 
 
 ######

@@ -11,9 +11,9 @@ services:
       - 443:443
       - 8888:8888
     volumes:
-      - ./armory:/armory-repo/armory:z
       - ./pyproject.toml:/armory-repo/pyproject.toml:z
       - ./workspace:/workspace:z
+      - ./:/workspace/src:z
       - ./tools/datasets/entrypoint.sh:/tmp/entrypoint.sh:z
 
     # deploy:
