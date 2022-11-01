@@ -1,9 +1,9 @@
 ---
 version: "3"
 services:
-  armory-launcher:
-    container_name: armory-launcher
-    image: twosixarmory/pytorch:latest
+  armory-datasets:
+    container_name: armory-datasets
+    image: twosixarmory/pytorch:0.16.0
     # command: ["tail", "-f", "/dev/null"]
     # entrypoint: [ "/bin/bash" ]
     ports:
@@ -11,14 +11,11 @@ services:
       - 443:443
       - 8888:8888
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ./tmp/armory-shell.sh:/tmp/armory-shell.sh:z
-      - ./tmp/docker.management.patch:/tmp/docker.management.patch:z
-      - ./data/:/workspace/data/:z
-      - ./tmp/config.json:/root/.armory/config.json:z
-      - ./armory/scenario_configs/:/workspace/scenarios/:z
-      - ./armory:/armory-repo/:z
-      # - ./armory:/workspace/src/:z
+      - ./armory:/armory-repo/armory:z
+      - ./pyproject.toml:/armory-repo/pyproject.toml:z
+      - ./workspace:/workspace:z
+      - ./tools/datasets/entrypoint.sh:/tmp/entrypoint.sh:z
+
     # deploy:
     #   resources:
     #     reservations:
