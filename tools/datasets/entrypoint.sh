@@ -20,6 +20,8 @@ SOURCE_ROOT="${PROFILE_ROOT}/src"
 
 # Check if `/.patched` exists
 if [ ! -f "/.patched" ]; then
+  apt update && apt --fix-broken install && apt install --yes libc-bin git
+
   conda init bash
   source ~/.bashrc
 
@@ -31,12 +33,18 @@ fi
 
 
 pushd "${PROFILE_ROOT}" > /dev/null || exit 1
-  mkdir -p datasets/${DATASET_NAME}
-  pushd datasets/${DATASET_NAME}
+  # mkdir -p datasets/${DATASET_NAME}
+  # pushd datasets/${DATASET_NAME}
+  mkdir -p tmp/${DATASET_NAME}
+  pushd tmp/${DATASET_NAME}
     if [ ! -d .git ]; then
-      # git lfs install
       GIT_LFS_SKIP_SMUDGE="${SKIP_LFS}" git clone https://huggingface.co/datasets/${DATASET_NAME} .
+
+      curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+      apt-get install git-lfs
+      git lfs install
     fi
+    git lfs fetch
     git pull
 
     echo "Converting ${DATASET_NAME} to TFDS format"
