@@ -261,3 +261,6 @@ $COMPOSE_COMMAND run --entrypoint="/bin/bash -c /tmp/entrypoint.sh" --workdir="/
 #     fi
 # }
 # wsl_win_proxy
+## netsh interface portproxy show all
+## netsh interface portproxy reset
+
