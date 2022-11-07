@@ -36,19 +36,24 @@ pushd armory
   PROJECT_ROOT=`git rev-parse --show-toplevel`
 popd
 
-# Set up SSL Certificates
-KEY_ALIAS="armory"
-CERT_PATH="data/certs/keystore.p12"
-CERT_ALIAS="armory"
-CERT_PASS="QWASZX23wesdxc"
-if ! [[ -f data/certs/server.crt ]] || ! [[ -f data/certs/server.key ]]; then
-  mkdir --parents data/certs
-  pushd data/certs
-    keytool -genkey -alias ${KEY_ALIAS} -storetype PKCS12 -keystore keystore.p12 -dname cn=${KEY_ALIAS} -validity 365 -storepass QWASZX23wesdxc -keypass QWASZX23wesdxc
-    # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -subj "/C=US/ST=CA/L=San Francisco/O=Two Six Labs/OU=Armory/CN=armory.twosixlabs.com"
-  popd
+# Networking
+if [ -n "$IS_WSL" ] || [ -n "$WSL_DISTRO_NAME" ]; then
+  WSL_IP=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
+  PS_CMD="netsh interface portproxy add v4tov4 listenport=8888 listenaddress=0.0.0.0 connectport=8888 connectaddress=172.23.92.158"
 fi
 
+# Set up SSL Certificates
+# KEY_ALIAS="armory"
+# CERT_PATH="data/certs/keystore.p12"
+# CERT_ALIAS="armory"
+# CERT_PASS="QWASZX23wesdxc"
+# if ! [[ -f data/certs/server.crt ]] || ! [[ -f data/certs/server.key ]]; then
+#   mkdir --parents data/certs
+#   pushd data/certs
+#     keytool -genkey -alias ${KEY_ALIAS} -storetype PKCS12 -keystore keystore.p12 -dname cn=${KEY_ALIAS} -validity 365 -storepass QWASZX23wesdxc -keypass QWASZX23wesdxc
+#     # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -subj "/C=US/ST=CA/L=San Francisco/O=Two Six Labs/OU=Armory/CN=armory.twosixlabs.com"
+#   popd
+# fi
 
 
 pushd tmp
@@ -106,7 +111,7 @@ touch /.patched
 export WORKER_DOCKER_VERSION=${HOST_DOCKER_VERSION}
 
 apt-get update
-apt-get install --yes tmux
+apt-get install --yes net-tools tmux
 
 curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${HOST_DOCKER_VERSION}.tgz
 tar xzvf docker-${HOST_DOCKER_VERSION}.tgz --strip 1 -C /usr/local/bin docker/docker
@@ -119,8 +124,6 @@ rm docker-${HOST_DOCKER_VERSION}.tgz
 patch --force /armory-repo/armory/docker/management.py < /tmp/docker.management.patch
 
 # cp --force /root/.armory/config.json /workspace/data/config.json
-
-ifconfig
 
 # Start Jupyter
 # TODO: Move into config
@@ -173,11 +176,6 @@ services:
 
     ports:
       - 8888:8888
-
-    # environment:
-    #   - CERT_ALIAS=${CERT_ALIAS?err}
-    #   - CERT_KEYSTORE_PASS=${CERT_PASS?err}
-    #   - CERT_TRUSTSTORE_PASS=${CERT_PASS?err}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw

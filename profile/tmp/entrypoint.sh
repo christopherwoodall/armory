@@ -5,7 +5,7 @@ touch /.patched
 export WORKER_DOCKER_VERSION=20.10.17
 
 apt-get update
-apt-get install --yes tmux
+apt-get install --yes net-tools tmux
 
 curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-20.10.17.tgz
 tar xzvf docker-20.10.17.tgz --strip 1 -C /usr/local/bin docker/docker
@@ -15,8 +15,6 @@ rm docker-20.10.17.tgz
 patch --force /armory-repo/armory/docker/management.py < /tmp/docker.management.patch
 
 # cp --force /root/.armory/config.json /workspace/data/config.json
-
-ifconfig
 
 # Start Jupyter
 # TODO: Move into config
