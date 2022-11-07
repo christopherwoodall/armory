@@ -1,0 +1,31 @@
+--- /armory-repo/armory/docker/management.py	2022-10-26 14:27:07.632172258 +0000
++++ /armory-repo/armory/docker/management.py.patch	2022-10-26 14:26:55.236697880 +0000
+@@ -29,14 +29,25 @@
+         host_paths = paths.HostPaths()
+         docker_paths = paths.DockerPaths()
+
++        prefix = "/mnt/c/Users/Chris/Desktop/work/armory/profile"
++
++        mount_map = {
++            f"{prefix}/data/workspace": "/workspace",
++            f"{prefix}/data/datasets/": "/armory/datasets/",
++            f"{prefix}/armory": "/armory/git",
++            f"{prefix}/data/outputs": "/armory/outputs",
++            f"{prefix}/data/models": "/armory/saved_models",
++            f"{prefix}/data/tmp": "/armory/tmp",
++        }
++
+         mounts = [
+             docker.types.Mount(
+-                source=getattr(host_paths, dir),
+-                target=getattr(docker_paths, dir),
++                source=src,
++                target=dest,
+                 type="bind",
+                 read_only=False,
+             )
+-            for dir in "cwd dataset_dir local_git_dir output_dir saved_model_dir tmp_dir".split()
++            for src, dest in mount_map.items()
+         ]
+
+         container_args = {
