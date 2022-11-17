@@ -31,7 +31,7 @@ dependencies = [
     "docker",
     "jsonschema",
     "loguru",
-    "mlflow-skinny",
+    "mlflow",
     "pytest",
     "PyYAML",
     "requests",
